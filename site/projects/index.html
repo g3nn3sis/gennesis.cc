@@ -49,7 +49,7 @@
       transform: scale(1.15);
       text-shadow: 0 0 15px #66fcf1;
     }
-    section {
+    main {
       padding: 4rem 2rem;
       max-width: 1000px;
       margin: auto;
@@ -75,27 +75,12 @@
       transform: scale(1.05);
       box-shadow: 0 6px 25px rgba(102, 252, 241, 0.3);
     }
-    .languages {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-    .lang {
-      background-color: #0b0c10;
-      border: 1px solid #66fcf1;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      font-weight: bold;
-      color: #66fcf1;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      user-select: none;
-    }
     footer {
       text-align: center;
       padding: 2rem;
       background: #0b0c10;
       font-size: 0.9rem;
+      margin-top: 4rem;
     }
     a {
       color: #66fcf1;
@@ -117,31 +102,29 @@
   <header>
     <h1>@gennesis</h1>
     <nav>
-      <a href="#about">About</a>
-      <a href="#projects">Projects</a>
+      <a href="/site/">Home</a>
+      <a href="/site/projects/" aria-current="page">Projects</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
+  <main>
+  <h2>Projects</h2>
+  <div class="project-card">
+    <h3>Genne-Taggers</h3>
+    <p>A Gorilla Tag-inspired game!</p>
+  </div>
+    <div class="project-card">
+    <h3>GenneCaster</h3>
+    <p>A Mod for Gorilla Tag to Spectate people!</p>
+  </div>
 
-  <section id="about">
-    <h2>About Me</h2>
-    <p>Hello, Im Gennesis, I like making stuff.</p>
-    <div class="languages">
-      <div class="lang">C#</div>
-      <div class="lang">Python</div>
-      <div class="lang">HTML</div>
-      <div class="lang">CSS</div>
-      <div class="lang">JavaScript</div>
-      <div class="lang">Unity</div>
-    </div>
-  </section>
-  <section id="contact">
+  <section id="contact" style="margin-top: 4rem; text-align: center;">
     <h2>Contact</h2>
-    <p>My Discord  :  <a href="https://discord.com/users/1244639564396757115">@g3nn3sis</a>, <a href="https://discord.com/users/1230776499079090176">@dfmna.</a></p>
+    <p>My Discord: <a href="https://discord.com/users/1244639564396757115">@g3nn3sis</a>, <a href="https://discord.com/users/1230776499079090176">@dfmna.</a></p>
   </section>
-
+  </main>
   <footer>
-    <p>&copy; 2025 @g3nn3sis — Built with code &amp; curiosity</p>
+    <p>&copy; 2025 @g3nn3sis - Built with Cool.</p>
   </footer>
 </body>
 </html>
