@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.gennesis.cc"
+        }
+      ],
+      "destination": "/store",
+      "permanent": true
+    }
+  ]
+}
