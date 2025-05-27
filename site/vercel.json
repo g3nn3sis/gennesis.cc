@@ -1,5 +1,5 @@
 {
-  "redirects": [
+  "rewrites": [
     {
       "source": "/",
       "has": [
@@ -8,8 +8,17 @@
           "value": "store.gennesis.cc"
         }
       ],
-      "destination": "/store",
-      "permanent": true
+      "destination": "/store"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.gennesis.cc"
+        }
+      ],
+      "destination": "/store/$1"
     }
   ]
 }
