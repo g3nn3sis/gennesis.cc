@@ -180,7 +180,6 @@
       <div class="lang">Python</div>
       <div class="lang">HTML</div>
       <div class="lang">CSS</div>
-      <div class="lang">Unity</div>
     </div>
   </section>
 
@@ -188,11 +187,12 @@
     <h2>Projects</h2>
     <div id="github-projects"></div>
   </section>
-
+  <!--
   <section id="mark-rober">
     <h2>Mark Rober Video Of The Day</h2>
     <div id="rober-video"></div>
   </section>
+-->
 
   <section id="contact">
     <h2>Contact</h2>
@@ -225,7 +225,6 @@
       .catch(error => {
         console.error("Error fetching GitHub repos:", error);
       });
-
     // Mark Rober Video of the Day
     const roberVideos = [
       "qr1AvisQcV8", "g6tlNyr5sl8", "IQJL3htsDyQ",
@@ -233,6 +232,7 @@
       "SrGENEXocJU", "QpwJEYGCngI", "M7-h3FO-KKo",
       "iWWWyG5ZwG8", "7__r4FVj-EI", "JdFRjsEZrmU"
     ];
+    
 
     const today = new Date();
     const index = today.getDate() % roberVideos.length;
