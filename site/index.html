@@ -2,249 +2,197 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gennesis.cc</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gennesis Projects</title>
   <style>
     :root {
-      --bg-start: #052005;       /* Very dark forest green */
-      --bg-end: #144214;         /* Darker medium forest green */
-      --accent: #357a38;         /* Deep forest green accent */
-      --text-light: #b8d8b8;     /* Softer, muted light green text */
-      --text-muted: #8a9a8a;     /* Muted gray-green text */
-      --button-bg: #102810;      /* Very dark green button bg */
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      --bg-light: linear-gradient(135deg, #e0eafc, #cfdef3);
+      --text-light: #333;
+      --bg-dark: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --text-dark: #fff;
+      --btn-bg-light: rgba(0, 0, 0, 0.08);
+      --btn-bg-dark: rgba(255, 255, 255, 0.2);
+      --btn-hover-light: rgba(0, 0, 0, 0.15);
+      --btn-hover-dark: rgba(255, 255, 255, 0.3);
+      --border-light: #888;
+      --border-dark: #ccc;
     }
 
     body {
-      font-family: 'Rubik', sans-serif;
-      background: linear-gradient(to bottom right, var(--bg-start), var(--bg-end));
-      color: var(--text-light);
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 1.2rem 2rem;
-      background: rgba(5, 32, 5, 0.85);
-      backdrop-filter: blur(10px);
+      justify-content: flex-start;
+      padding: 2rem 1rem;
+      transition: background 0.5s ease, color 0.5s ease;
     }
 
-    .logo {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: var(--accent);
-    }
-
-    nav {
-      display: flex;
-      gap: 1.2rem;
-      align-items: center;
-    }
-
-    nav a {
+    body.light {
+      background: var(--bg-light);
       color: var(--text-light);
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: color 0.2s;
     }
 
-    nav a:hover {
-      color: var(--accent);
-    }
-
-    .signup {
-      background: var(--accent);
-      color: #d9f1d9;
-      border: none;
-      border-radius: 8px;
-      padding: 0.5rem 0.75rem;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    .signup:hover {
-      background: #4a9651;
-      color: #d9f1d9;
-    }
-
-    .hero {
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
       text-align: center;
-      padding: 6rem 2rem 4rem;
+      animation: fadeSlideUp 0.8s ease forwards;
     }
 
-    .hero h1 {
-      font-size: 2.8rem;
-      font-weight: 700;
+    p {
+      font-size: 1rem;
+      max-width: 800px;
+      margin: 0 auto 2rem auto;
+      text-align: center;
+      animation: fadeSlideUp 0.8s ease forwards;
+    }
+
+    .projects-container {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      padding: 2rem 1rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .project-card {
+      flex: 0 0 auto;
+      width: 280px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 1rem;
+      text-align: center;
+      scroll-snap-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+      border: 3px solid var(--border-dark);
+    }
+
+    body.light .project-card {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: var(--border-light);
+    }
+
+    .project-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .project-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 12px;
       margin-bottom: 1rem;
-      color: var(--text-light);
-    }
-
-    .hero p {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      margin-bottom: 2.5rem;
-    }
-
-    .claim-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .input-wrapper {
-      display: flex;
-      align-items: center;
-      background: var(--button-bg);
-      border-radius: 8px;
-      padding: 0 0.75rem;
-    }
-
-    .input-wrapper span {
-      color: var(--text-light);
-      font-weight: 600;
-      white-space: nowrap;
-      margin-top: 3.55px;
-      margin-right: 2px;
-      font-size: 0.9rem;
-
       user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
     }
 
-    .input-wrapper input {
-      background: transparent;
-      border: none;
-      outline: none;
+    .project-card h2 {
+      margin: 0.5rem 0;
+      font-size: 1.25rem;
+    }
+
+    .project-card a {
+      text-decoration: none;
+      font-weight: bold;
+      color: inherit;
+      background: var(--btn-bg-dark);
+      padding: 0.5em 1em;
+      border-radius: 10px;
+      display: inline-block;
+      margin-top: 0.5rem;
+      transition: background 0.3s ease;
+    }
+
+    .project-card a:hover {
+      background: var(--btn-hover-dark);
+    }
+
+    body.light .project-card a {
+      background: var(--btn-bg-light);
       color: var(--text-light);
-      font-size: 1rem;
-      padding: 0.75rem 0;
-      width: 180px;
-      transition: color 0.3s;
     }
 
-    .input-wrapper input::placeholder {
-      color: var(--text-muted);
-      transition: color 0.3s;
+    body.light .project-card a:hover {
+      background: var(--btn-hover-light);
     }
 
-    .input-wrapper input:hover,
-    .input-wrapper input:focus {
-      color: var(--text-light);
-    }
-
-    .input-wrapper input:hover::placeholder,
-    .input-wrapper input:focus::placeholder {
-      color: var(--text-muted);
-    }
-
-    .claim-box button {
-      background: var(--accent);
-      color: #d9f1d9;
+    .theme-toggle {
+      margin-bottom: 1rem;
+      padding: 0.4em 1.2em;
+      background: var(--btn-bg-dark);
+      border-radius: 20px;
       border: none;
-      border-radius: 8px;
-      padding: 0.75rem 1.25rem;
-      font-weight: 700;
-      font-size: 1rem;
+      color: var(--text-dark);
       cursor: pointer;
-      transition: background 0.3s;
+      font-weight: bold;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    .claim-box button:hover {
-      background: #4a9651;
+    body.light .theme-toggle {
+      background: var(--btn-bg-light);
+      color: var(--text-light);
     }
 
-    .mockups {
-      display: flex;
-      justify-content: center;
-      margin-top: 4rem;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .mockups img {
-      width: 300px;
-      border-radius: 1rem;
-      box-shadow: 0 0 20px rgba(74, 150, 81, 0.3);
-      transform: rotate(-3deg);
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.9rem;
-      color: var(--text-muted);
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">gennesis.cc</div>
-    <nav>
-      <a href="#">Help Center</a>
-      <a href="#">Discord</a>
-      <a href="#">Pricing</a>
-      <a href="#">Login</a>
-      <a href="#" class="signup">Sign Up Free</a>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <h1>Everything you want, right here.</h1>
-    <p>gennesis.cc is your place for sleek, nice looking, and clean, customizable sites. Everything you need — right here.</p>
-
-    <div class="claim-box">
-      <div class="input-wrapper">
-        <span>gennesis.cc/</span>
-        <input type="text" id="chosen_username" placeholder="username" />
-      </div>
-      <button>Claim Now</button>
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+  <h1>gennesis.cc</h1>
+  <p>gennesis.cc is a site that hosts a growing collection of sleek, experimental, and aesthetic micro-projects — each designed to be simple, fast, and beautiful. Explore tools, interfaces, and interactive experiences crafted with care.</p>
+  <div class="projects-container">
+    <div class="project-card" data-project="home">
+      <img 
+        src="images/home-dark.png" 
+        alt="home.gennesis.cc Screenshot" 
+        data-dark="images/home-dark.png" 
+        data-light="images/home-light.png"
+      />
+      <h2>home.gennesis.cc</h2>
+      <a href="https://home.gennesis.cc" target="_blank" rel="noopener noreferrer">Visit</a>
     </div>
-  </section>
-
-  <section class="mockups">
-    <img src="https://placehold.co/300x200/052005/357a38?text=.gg/gennesis-cc" alt="Discord Link" />
-    <img src="https://placehold.co/300x200/052005/357a38?text=Profile+Card" alt="Mockup 2" />
-  </section>
-
-  <footer>
-    &copy; 2025 gennesis.cc — All rights reserved.
-  </footer>
+  </div>
+  <script>
+    function toggleTheme() {
+      const isLight = document.body.classList.toggle('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      updateImages(isLight);
+    }
+    function updateImages(isLight) {
+      document.querySelectorAll('.project-card img').forEach(img => {
+        const lightSrc = img.getAttribute('data-light');
+        const darkSrc = img.getAttribute('data-dark');
+        img.src = isLight ? lightSrc : darkSrc;
+      });
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      const isLight = savedTheme === 'light';
+      if (isLight) {
+        document.body.classList.add('light');
+      }
+      updateImages(isLight);
+    });
+  </script>
 </body>
 </html>
-<script>
-  document.querySelector(".claim-box button").addEventListener("click", async () => {
-    const slug = document.getElementById("chosen_username").value.trim();
-
-    if (!slug) return alert("You need To Enter a Username!");
-
-    const res = await fetch("/api/claim", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug })
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      alert("Success! Your link: https://gennesis.cc/" + slug);
-    } else {
-      alert("Error: " + data.error);
-    }
-  });
-</script>

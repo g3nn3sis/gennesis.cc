@@ -4,66 +4,133 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>500 - Internal Server Error | gennesis.cc</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-start: #052005;
-      --bg-end: #144214;
-      --accent: #357a38;
-      --text-light: #b8d8b8;
-      --text-muted: #8a9a8a;
-      --button-bg: #102810;
-    }
-
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      --bg-light: linear-gradient(135deg, #e0eafc, #cfdef3);
+      --text-light: #333;
+      --bg-dark: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --text-dark: #fff;
+      --btn-bg-light: rgba(0, 0, 0, 0.08);
+      --btn-bg-dark: rgba(255, 255, 255, 0.2);
+      --btn-hover-light: rgba(0, 0, 0, 0.15);
+      --btn-hover-dark: rgba(255, 255, 255, 0.3);
     }
 
     body {
-      font-family: 'Rubik', sans-serif;
-      background: linear-gradient(to bottom right, var(--bg-start), var(--bg-end));
-      color: var(--text-light);
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
       text-align: center;
+      transition: background 0.5s ease, color 0.5s ease;
+      user-select: none;
       padding: 2rem;
+      position: relative;
+    }
+
+    body.light {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    img.logo {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 1rem;
+      user-select: none;
     }
 
     h1 {
-      font-size: 8rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: var(--accent);
+      font-size: 4rem;
+      margin: 0.2em 0 0.4em;
     }
 
     p {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-      color: var(--text-muted);
+      font-size: 1.25rem;
+      margin: 0 0 1.5em;
+      user-select: text;
     }
 
-    a.button {
-      background: var(--accent);
-      color: var(--text-light);
-      padding: 0.75rem 1.5rem;
-      font-weight: 700;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background 0.3s;
+    a.home-link {
       display: inline-block;
+      background: var(--btn-bg-dark);
+      color: var(--text-dark);
+      padding: 0.7em 2em;
+      border-radius: 25px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.3s ease;
+      user-select: none;
     }
 
-    a.button:hover {
-      background: #4a9651;
+    body.light a.home-link {
+      background: var(--btn-bg-light);
+      color: var(--text-light);
+    }
+
+    a.home-link:hover,
+    a.home-link:focus {
+      background: var(--btn-hover-dark);
+      outline: none;
+    }
+
+    body.light a.home-link:hover,
+    body.light a.home-link:focus {
+      background: var(--btn-hover-light);
+    }
+
+    .toggle-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--btn-bg-dark);
+      border: none;
+      padding: 0.5em 1em;
+      border-radius: 20px;
+      color: var(--text-dark);
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      user-select: none;
+    }
+    body.light .toggle-btn {
+      background: var(--btn-bg-light);
+      color: var(--text-light);
+    }
+    .toggle-btn:hover,
+    .toggle-btn:focus {
+      background: var(--btn-hover-dark);
+      outline: none;
+    }
+    body.light .toggle-btn:hover,
+    body.light .toggle-btn:focus {
+      background: var(--btn-hover-light);
     }
   </style>
 </head>
 <body>
-  <h1>500</h1>
-  <p>Uh oh! Something went wrong on our end.</p>
-  <a href="https://www.gennesis.cc" class="button">Go Home</a>
+  <button class="toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme">Toggle Theme</button>
+  <h1>500!</h1>
+  <p>Something went wrong on our end. Please try again later.</p>
+  <a href="https://home.gennesis.cc" class="home-link" role="button">Go to Homepage</a>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+      if(document.body.classList.contains('light')) {
+        localStorage.setItem('theme', 'light');
+      } else {
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+    }
+  </script>
 </body>
 </html>
