@@ -194,7 +194,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const bioMessages = [
     "@dfmna is coolio!",
     "@gennesis is coolio!",
-    "Type 'expok' on your keyboard 😉"
+    "Type 'expok' on your keyboard 😉",
+    "Quest 2",
+    "Valve Index",
+    "Pico 4",
+    "Rift S"
   ];
   let bioText = '';
   let bioIndex = 0;
