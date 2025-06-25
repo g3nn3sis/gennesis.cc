@@ -1,88 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@g3nn3sis | @dfmna.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Retro+Gaming&display=swap" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>gennesis | dfmna</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.18);
+      --border-color: rgba(255, 255, 255, 0.3);
+      --shadow: rgba(0, 0, 0, 0.15);
+      --text-color: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Rubik', sans-serif;
+      background: url(assets/frutiger-aero.jpg) no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1rem 1rem;
+      text-align: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px var(--shadow);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: white;
+      text-shadow: 0 0 12px rgba(255,255,255,0.3);
+    }
+
+    nav {
+      margin-top: 1rem;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 1rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      text-shadow: 0 0 8px white;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 1000px;
+    }
+
+    .about-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .about-left, .about-right {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    section {
+      background: var(--glass-bg);
+      border: 2px solid var(--border-color);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 2rem;
+      border-radius: 1.75rem;
+      box-shadow: 0 6px 20px var(--shadow);
+      transition: transform 0.3s ease;
+      margin-bottom: 2rem;
+    }
+
+    section:hover {
+      transition: all 1s ease;
+      transform: translateY(-3px);
+      border-radius: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: white;
+      border-bottom: 2px solid white;
+      display: inline-block;
+    }
+
+    .languages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .lang {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .lang:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.3);
+    }
+
+    .project-card {
+      background: rgba(255,255,255,0.15);
+      border-left: 5px solid white;
+      padding: 1rem 1.2rem;
+      border-radius: 1rem;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      margin-bottom: 0.8rem;
+    }
+
+    .project-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.3);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+
+    footer .social-icons {
+      margin-bottom: 1rem;
+    }
+
+    footer .social-icons a {
+      display: inline-block;
+      margin: 0 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    footer .social-icons a img {
+      width: 32px;
+      height: 32px;
+      filter: brightness(1);
+      transition: filter 0.5s ease;
+    }
+
+    footer .social-icons a:hover img {
+      filter: brightness(1) drop-shadow(0 0 4px #FFFFFF);
+      transform: scale(1.3);
+    }
+
+    a {
+      color: white;
+    }
+
+    a:hover {
+      text-shadow: 0 0 4px white;
+    }
+
+    @media (max-width: 768px) {
+      .about-container {
+        flex-direction: column;
+      }
+
+      header h1 {
+        font-size: 2.2rem;
+      }
+
+      main {
+        padding: 1.5rem;
+      }
+    }
+  </style>
 </head>
-<body class="home-theme" onload="initMedia()">
-    <div id="start-screen">
-        <div id="start-text"></div>
-    </div>
-    <div class="container">
-        <video id="background" autoplay loop muted playsinline webkit-playsinline>
-            <source src="assets/background.mp4" type="video/mp4">
-        </video>
-        <div id="profile-block">
-            <div class="profile-header">
-                <div class="profile-container">
-                    <img src="assets/pfp.png" alt="Profile" class="profile-picture">
-                </div>
-                <div class="profile-info">
-                    <div class="name-and-badges">
-                        <div id="profile-name">@gennesis | @dfmna</div>
-                        <div class="badge-box">
-                            <div class="badge-box-inner">
-                                <div class="badge-group">
-                                    <div class="badge-container">
-                                        <img src="https://cdn.discordapp.com/emojis/1062896266725572730.gif?size=96&animated=true" alt="Verified Coolio!" class="badge">
-                                        <span class="tooltip">Verified Coolio!</span>
-                                    </div>
-                                    <div class="badge-container">
-                                        <img src="assets/discord_dev.png" alt="Discord Developer!" class="badge">
-                                        <span class="tooltip">Discord Developer!</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="profile-bio"></div>
-                </div>
-            </div>
+<body>
+  <header>
+    <h1><a href="https://gennesis.cc">@gennesis</a></h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
 
-            <div class="bio-separator"></div>
-            <div class="profile-footer">
-                <div class="social-links">
-                    <a href="https://github.com/g3nn3sis" target="_blank">
-                        <img src="assets/white_github_logo.png" alt="GitHub" class="social-icon">
-                    </a>
-                    <a href="https://discord.com/users/1169004167663194235" target="_blank">
-                        <img src="assets/white_discord_logo.png" alt="GitHub" class="social-icon">
-                    </a>
-                    <a href="https://guns.lol/gennesis" target="_blank">
-                        <img src="assets/guns_lol.png" alt="guns.lol" class="social-icon">
-                    </a>
-                </div>
-
-
-                <div class="visitor-counter">
-                    <svg class="visitor-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                    </svg>
-                    <span id="visitor-count">0</span>
-                    <span class="tooltip">Profile Views</span>
-                </div>
-            </div>
+  <main>
+	<section id="bigone">
+    <div class="about-container">
+      <section class="about-left" id="about">
+        <h2>About</h2>
+        <p>Hello I like making things and Photography!</p>
+        <div class="languages">
+          <div class="lang">C#</div>
+          <div class="lang">Python</div>
+          <div class="lang">Scratch</div>
         </div>
+      </section>
 
-        <div class="top-controls">
-            <div class="volume-control">
-                <svg id="volume-icon" class="volume-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
-                </svg>
-                <input id="volume-slider" class="slider" type="range" min="0" max="1" step="0.01" value="0.3">
-            </div>
-        </div>
+      <section class="about-right">
+        <h2>Now Playing</h2>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5xA5MggKc3aQxuOzNzPUWB?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </section>
     </div>
 
-    <audio id="background-music" loop>
-        <source src="assets/background_music.mp3" type="audio/mp3">
-    </audio>
+    <section id="projects">
+      <h2>Repositories</h2>
+      <div id="github-projects"></div>
+    </section>
+    </section>
+  </main>
 
-    <script src="script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <footer>
+    <div class="social-icons">
+      <a href="https://discord.com/users/1244639564396757115" target="_blank" aria-label="Discord">
+        <img src="assets/discord.png" alt="Discord Logo" />
+      </a>
+      <a href="https://open.spotify.com/user/31b37pzsrkyu77frpvwxkg36eloe?si=97cca9bcd2604faa" target="_blank" aria-label="Spotify">
+        <img src="assets/spotify.png" alt="Spotify Logo" />
+      </a>
+      <a href="https://github.com/g3nn3sis" target="_blank" aria-label="Github">
+        <img src="assets/github-logo.png" alt="Github Logo" />
+      </a>
+    </div>
+    <p>&copy; 2025 gennesis.cc — Frutiger Aero.</p>
+  </footer>
+
+  <script>
+
+    fetch(`https://api.github.com/users/g3nn3sis/repos?sort=updated&per_page=6`)
+      .then(response => response.json())
+      .then(repos => {
+        const container = document.getElementById("github-projects");
+        repos.forEach(repo => {
+          const card = document.createElement("div");
+          card.className = "project-card";
+          card.innerHTML = `
+            <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
+            <p>${repo.description ? repo.description : "No description provided."}</p>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(error => {
+        console.error("Error loading GitHub repos:", error);
+      });
+  </script>
 </body>
 </html>
