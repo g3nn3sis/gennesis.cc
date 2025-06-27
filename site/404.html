@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>404 Not Found | gennesis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.18);
+      --border-color: rgba(255, 255, 255, 0.3);
+      --shadow: rgba(0, 0, 0, 0.15);
+      --text-color: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Rubik', sans-serif;
+      background: url(assets/frutiger-aero.jpg) no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 1rem 1rem;
+      text-align: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px var(--shadow);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: white;
+      text-shadow: 0 0 12px rgba(255,255,255,0.3);
+    }
+
+    header h1 a {
+      color: white;
+      text-decoration: none;
+    }
+
+    main {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .error-container {
+      background: var(--glass-bg);
+      border: 2px solid var(--border-color);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 3rem;
+      border-radius: 2rem;
+      box-shadow: 0 6px 20px var(--shadow);
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .error-container h2 {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: white;
+      text-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    .error-container p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .error-container a {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.8rem 1.6rem;
+      border-radius: 12px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      transition: background 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .error-container a:hover {
+      background: rgba(255, 255, 255, 0.4);
+      color: black;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+
+    footer .social-icons {
+      margin-bottom: 1rem;
+    }
+
+    footer .social-icons a {
+      display: inline-block;
+      margin: 0 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    footer .social-icons a img {
+      width: 32px;
+      height: 32px;
+      filter: brightness(1);
+      transition: filter 0.5s ease;
+    }
+
+    footer .social-icons a:hover img {
+      filter: brightness(1) drop-shadow(0 0 4px #FFFFFF);
+      transform: scale(1.3);
+    }
+
+    @media (max-width: 768px) {
+      .error-container h2 {
+        font-size: 3rem;
+      }
+
+      .error-container p {
+        font-size: 1rem;
+      }
+
+      header h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><a href="https://www.gennesis.cc">@gennesis</a></h1>
+  </header>
+
+  <main>
+    <div class="error-container">
+      <h2>404</h2>
+      <p>Oops! The page you're looking for doesn't exist.</p>
+      <a href="https://www.gennesis.cc">Take me home</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="social-icons">
+      <a href="https://discord.com/users/1244639564396757115" target="_blank" aria-label="Discord">
+        <img src="assets/discord.png" alt="Discord Logo" />
+      </a>
+      <a href="https://open.spotify.com/user/31b37pzsrkyu77frpvwxkg36eloe?si=97cca9bcd2604faa" target="_blank" aria-label="Spotify">
+        <img src="assets/spotify.png" alt="Spotify Logo" />
+      </a>
+      <a href="https://github.com/g3nn3sis" target="_blank" aria-label="Github">
+        <img src="assets/github-logo.png" alt="Github Logo" />
+      </a>
+    </div>
+    <p>&copy; 2025 gennesis.cc — Frutiger Aero.</p>
+  </footer>
+</body>
+</html>
