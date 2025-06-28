@@ -224,7 +224,10 @@
         <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5xA5MggKc3aQxuOzNzPUWB?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       </section>
     </div>
-
+    <section id="quotecontainer">
+      <h2>Quote Of The Day</h2>
+      <div id="quote"></div>
+    </section>
     <section id="projects">
       <h2>Projects</h2>
       <div id="github-projects"></div>
@@ -248,21 +251,41 @@
   </footer>
 
   <script>
-    fetch(`https://api.github.com/users/g3nn3sis/repos?sort=updated&per_page=6`)
-      .then(response => response.json())
-      .then(repos => {
-        const container = document.getElementById("github-projects");
-        repos.forEach(repo => {
-          const card = document.createElement("div");
-          card.className = "project-card";
-          card.innerHTML = `
-            <h3>${repo.name}</h3>
-            <p>${repo.language ? repo.language : "Unknown Language."}</p>
-          `;
-          container.appendChild(card);
-        });
-      })
-      .catch(error => {});
-  </script>
+  fetch('https://api.github.com/users/g3nn3sis/repos?sort=updated&per_page=6')
+    .then(response => response.json())
+    .then(repos => {
+      const container = document.getElementById("github-projects");
+      repos.forEach(repo => {
+        const card = document.createElement("div");
+        card.className = "project-card";
+        card.innerHTML = `
+          <h3>${repo.name}</h3>
+          <p>${repo.language ? repo.language : "Unknown Language."}</p>
+        `;
+        container.appendChild(card);
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching GitHub projects:", error);
+    });
+  fetch('https://api.gennesis.cc/api/daily_quote')
+    .then(response => response.json())
+    .then(data => {
+      const container = document.getElementById("quote");
+      const quote = data.motd
+
+      const card = document.createElement("div");
+      card.className = "quote";
+      card.innerHTML = `<p>${quote}</p>`;
+
+      container.appendChild(card);
+    })
+    .catch(error => {
+      console.error("Error fetching quote:", error);
+      const container = document.getElementById("quote");
+      container.innerHTML = `<p>Error Loading Quote!</p>`;
+    });
+</script>
+
 </body>
 </html>
