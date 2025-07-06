@@ -33,7 +33,6 @@
     header {
       padding: 1rem 1rem;
       text-align: center;
-      background: var(--glass-bg);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       box-shadow: 0 8px 32px var(--shadow);
@@ -81,7 +80,6 @@
     }
 
     section {
-      background: var(--glass-bg);
       border: 2px solid var(--border-color);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -95,7 +93,6 @@
     section:hover {
       transition: all 1s ease;
       transform: translateY(-30px);
-      border-radius: 2rem;
     }
 
     h2 {
@@ -125,14 +122,13 @@
     }
 
     .lang:hover {
-      transform: scale(1.05);
+      transform: scale(1.1);
       transition: all 0.3s ease;
       box-shadow: 0 6px 18px rgba(255, 255, 255, 0.3);
     }
 
     .project-card {
-      background: rgba(255,255,255,0.15);
-      border-left: 5px solid white;
+      border-left: 5px solid rgba(255, 255, 255, 0.075);
       padding: 1rem 1.2rem;
       border-radius: 1rem;
       box-shadow: 0 3px 10px rgba(0,0,0,0.2);
@@ -149,7 +145,6 @@
     footer {
       text-align: center;
       padding: 2rem;
-      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(12px);
       border-top: 1px solid var(--border-color);
       font-size: 0.9rem;
@@ -214,7 +209,7 @@
     </nav>
   </header>
   <main>
-	<section id="bigone">
+	<section id="leftpanel">
     <div class="about-container">
       <section class="about-left" id="about">
         <h2>About</h2>
@@ -228,7 +223,6 @@
           <div class="lang">JavaScript</div>
         </div>
       </section>
-
       <section class="about-right">
         <h2>Song Pick</h2>
         <div class="spotifyembed">
