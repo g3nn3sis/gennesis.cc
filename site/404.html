@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>404 Not Found | gennesis</title>
+  <title>404 | gennesis</title>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -65,18 +65,8 @@
     main {
       padding: 2rem;
       max-width: 1100px;
-    }
-
-    .about-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .about-left, .about-right {
-      flex: 1;
-      min-width: 280px;
+      margin: 2rem auto;
+      width: 100%;
     }
 
     section {
@@ -88,11 +78,12 @@
       box-shadow: 0 6px 20px var(--shadow);
       transition: transform 0.3s ease;
       margin-bottom: 2rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
     }
 
     section:hover {
       transition: all 1s ease;
-      transform: translateY(-30px);
+      transform: translateY(-10px);
     }
 
     h2 {
@@ -103,43 +94,38 @@
       display: inline-block;
     }
 
-    .languages {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 1rem;
+    .notfound {
+      text-align: center;
+      padding: 2rem;
     }
 
-    .lang {
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 0.4rem 0.8rem;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 0.9rem;
+    .notfound h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #ffffff;
+      text-shadow: 0 0 14px rgba(255,204,0,0.2);
+    }
+
+    .notfound p {
+      margin-bottom: 1.25rem;
+      color: #eee;
+    }
+
+    .btn-home {
+      display: inline-block;
+      padding: 0.6rem 1rem;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
       color: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.25s ease;
     }
 
-    .lang:hover {
-      transform: scale(1.1);
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.3);
-    }
-
-    .project-card {
-      border-left: 5px solid rgba(255, 255, 255, 0.075);
-      padding: 1rem 1.2rem;
-      border-radius: 1rem;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-      transition: all 0.3s ease;
-      margin-bottom: 0.8rem;
-    }
-
-    .project-card:hover {
-      transform: scale(1.05);
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.3);
+    .btn-home:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
 
     footer {
@@ -148,6 +134,7 @@
       backdrop-filter: blur(12px);
       border-top: 1px solid var(--border-color);
       font-size: 0.9rem;
+      margin-top: auto;
     }
 
     footer .social-icons {
@@ -172,11 +159,6 @@
       transform: scale(2);
     }
 
-    .spotifyembed :hover {
-      transition: all 0.3s ease-in-out;
-      transform: scale(1.05);
-    }
-
     a {
       color: white;
     }
@@ -186,10 +168,6 @@
     }
 
     @media (max-width: 768px) {
-      .about-container {
-        flex-direction: column;
-      }
-
       header h1 {
         font-size: 2.2rem;
       }
@@ -197,20 +175,28 @@
       main {
         padding: 1.5rem;
       }
+
+      .notfound h1 {
+        font-size: 2.2rem;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <h1><a href="https://www.gennesis.cc">gennesis.cc</a></h1>
+    <nav>
+      <a href="/">Home</a>
+    </nav>
   </header>
 
   <main>
-    <div class="error-container">
-      <h2>404</h2>
-      <p>Oops! The page you're looking for doesn't exist.</p>
-      <a href="https://www.gennesis.cc">Take me home</a>
-    </div>
+    <section class="notfound">
+      <h1>404 — Page Not Found</h1>
+      <p>Looks like the page you're trying to reach doesn't exist or has been moved.</p>
+      <p>Try returning home or using the navigation above.</p>
+      <a class="btn-home" href="https://www.gennesis.cc" role="button">Go to Home</a>
+    </section>
   </main>
 
   <footer>
