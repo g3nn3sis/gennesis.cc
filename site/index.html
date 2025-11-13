@@ -48,61 +48,21 @@
   <footer>
     <div class="social-icons">
       <a href="https://discord.com/users/1244639564396757115" target="_blank" aria-label="Discord Profile">
-        <img src="assets/discord.png" alt="Discord Logo" />
+        <img src="assets/media/discord.png" alt="Discord Logo" />
       </a>
       <a href="https://open.spotify.com/user/31b37pzsrkyu77frpvwxkg36eloe?si=97cca9bcd2604faa" target="_blank" aria-label="Spotify Profile">
-        <img src="assets/spotify.png" alt="Spotify Logo" />
+        <img src="assets/media/spotify.png" alt="Spotify Logo" />
       </a>
       <a href="https://github.com/g3nn3sis" target="_blank" aria-label="Github Profile">
-        <img src="assets/github-logo.png" alt="Github Logo" />
+        <img src="assets/media/github-logo.png" alt="Github Logo" />
       </a>
       <a href="https://steamcommunity.com/id/g3nn3sis" target="_blank" aria-label="Steam Profile">
-        <img src="assets/steam.png" alt="Steam" />
+        <img src="assets/media/steam.png" alt="Steam" />
       </a>
     </div>
     <p>&copy; 2025 gennesis.cc — Please don't steal.</p>
   </footer>
   <script defer src="https://umami.rect.online/script.js" data-website-id="5bc5e914-14a7-4434-94a9-7446191f59ec"></script>
-<<<<<<< HEAD
   <script src="assets/app.js"></script>
-=======
-  <script>
-  fetch('https://api.github.com/users/g3nn3sis/repos?sort=updated&per_page=6')
-    .then(response => response.json())
-    .then(repos => {
-      const container = document.getElementById("github-projects");
-      repos.forEach(repo => {
-        const card = document.createElement("div");
-        card.className = "project-card";
-        card.innerHTML = `
-          <h3>${repo.name}</h3>
-          <p>${repo.language ? repo.language : "Unknown Language."}</p>
-        `;
-        container.appendChild(card);
-      });
-    })
-    .catch(error => {
-      console.error("Error fetching GitHub projects:", error);
-    });
-  // fetch('https://api.gennesis.cc/api/daily_quote')
-  //   .then(response => response.json())
-  //   .then(data => {
-  //     const container = document.getElementById("quote");
-  //     const quote = data.motd
-
-  //     const card = document.createElement("div");
-  //     card.className = "quote";
-  //     card.innerHTML = `<p>${quote}</p>`;
-
-  //     container.appendChild(card);
-  //   })
-  //   .catch(error => {
-  //     console.error("Error fetching quote:", error);
-  //     const container = document.getElementById("quote");
-  //     container.innerHTML = `<p>Error Loading Quote!</p>`;
-  //   });
-</script>
-
->>>>>>> 1470ebf0735d66b713ec1966a9a81334e4194ab4
 </body>
 </html>
