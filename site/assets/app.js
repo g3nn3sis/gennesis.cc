@@ -5,6 +5,8 @@ const GitHubLoader = {
       return;
     }
 
+    container.innerHTML = '<p class="project-card">Loading projects…</p>';
+
     try {
       const response = await fetch(
         `https://api.github.com/users/g3nn3sis/repos?sort=updated&per_page=${limit}`
@@ -18,7 +20,7 @@ const GitHubLoader = {
       this.renderProjects(repos, container);
     } catch (error) {
       console.error('Error fetching GitHub projects:', error);
-      container.innerHTML = `<p style="color: #ff6b6b;">Failed to load projects</p>`;
+      container.innerHTML = '<p class="project-card">Projects are temporarily unavailable.</p>';
     }
   },
 
@@ -29,12 +31,24 @@ const GitHubLoader = {
   renderProjects: function (repos, container) {
     container.innerHTML = '';
 
-    repos.forEach((repo) => {
+    const visibleRepos = repos.filter((repo) => !repo.fork).slice(0, 6);
+
+    if (!visibleRepos.length) {
+      container.innerHTML = '<p class="project-card">No projects to show right now.</p>';
+      return;
+    }
+
+    visibleRepos.forEach((repo) => {
       const card = document.createElement('div');
       card.className = 'project-card';
       card.innerHTML = `
         <h3>${this.escapeHtml(repo.name)}</h3>
-        <p>${repo.language ? this.escapeHtml(repo.language) : 'Unknown Language'}</p>
+        <p>${this.escapeHtml(repo.description || 'A small project with a curious purpose.')}</p>
+        <div class="meta">
+          <span>${this.escapeHtml(repo.language || 'Misc')}</span>
+          <span>${repo.stargazers_count > 0 ? `${repo.stargazers_count}★` : 'fresh'}</span>
+        </div>
+        <a href="${this.escapeHtml(repo.html_url)}" target="_blank" rel="noreferrer">View on GitHub →</a>
       `;
       container.appendChild(card);
     });
@@ -53,6 +67,6 @@ const GitHubLoader = {
 
 document.addEventListener('DOMContentLoaded', function () {
   if (document.getElementById('github-projects')) {
-    GitHubLoader.init('g3nn3sis', 'github-projects', 6);
+    GitHubLoader.init(6);
   }
 });

@@ -4,59 +4,116 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>gennesis | dfmna</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet" />
+  <meta name="description" content="gennesis.cc — a calm, modern portfolio for a developer and music lover." />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-  <header>
-    <h1><a href="https://www.gennesis.cc">gennesis | dfmna<br></a></h1>
-  </header>
-  <main>
-	<section id="leftpanel">
-    <div class="about-container">
-      <section class="about-left" id="about">
-        <h2>About</h2>
-        <p>
-			hello, i am gennesis;<br>I like music.
-		</p>
-        <p>____________</p>
-        <br>
-        <h4>Learning</h4>
-        <div class="languages">
-          <div class="lang">C#</div>
-          <div class="lang">Python</div>
-          <div class="lang">SQL</div>
-        </div>
-      </section>
-      <section class="about-right">
-        <h2>My Playlist</h2>
-        <div class="spotifyembed">
-			<iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/48GJHh09DHg3IjIYwsHaoT?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-      </section>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="#top">gennesis | dfmna</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#about">About</a>
+      </nav>
     </div>
-    <section id="projects">
-      <h2>Projects</h2>
-      <div id="github-projects"></div>
+  </header>
+
+  <main id="top">
+    <section id="about" class="content-section" aria-labelledby="about-title">
+      <div class="section-heading">
+        <p class="eyebrow">About</p>
+        <h2 id="about-title">Hello! I'm gennesis :)</h2>
+      </div>
+      <div class="content-grid">
+        <article class="card">
+          <h3>What is this for?</h3>
+          <p>I honestly don't know, but hi I'm gennesis!</p>
+        </article>
+        <article class="card">
+          <h3>Learning</h3>
+          <div class="pill-row">
+            <span class="pill">C#</span>
+            <span class="pill">Python</span>
+            <span class="pill">SQL</span>
+          </div>
+        </article>
+      </div>
     </section>
+
+    <section id="playlist" class="content-section" aria-labelledby="playlist-title">
+      <div class="section-heading">
+        <p class="eyebrow">Spotify
+        </p>
+        <h2 id="playlist-title">Attractions</h2>
+      </div>
+      <div class="showcase-grid">
+        <article class="card card--wide">
+          <h3>General Playlist</h3>
+          <p>A mix of songs that I often listen too.</p>
+          <div class="spotifyembed">
+            <iframe
+              data-testid="embed-iframe"
+              src="https://open.spotify.com/embed/playlist/48GJHh09DHg3IjIYwsHaoT?utm_source=gennesis.cc"
+              width="100%"
+              height="152"
+              frameBorder="0"
+              allowfullscreen=""
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </article>
+        <article class="card card--wide">
+          <h3>Radiohead & LoveJoy</h3>
+          <p>A mix of Radiohead and LoveJoy tracks.</p>
+          <div class="spotifyembed">
+            <iframe
+              data-testid="embed-iframe"
+              src="https://open.spotify.com/embed/playlist/0IGMcxmJgwM7N2ICW9FRtC?si=a29051cece924eef?utm_source=gennesis.cc"
+              width="100%"
+              height="152"
+              frameBorder="0"
+              allowfullscreen=""
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- <section id="projects" class="content-section" aria-labelledby="projects-title">
+      <div class="section-heading">
+        <p class="eyebrow">Projects</p>
+        <h2 id="projects-title">Recent work and experiments.</h2>
+      </div>
+      <div id="github-projects" class="projects-grid"></div>
+    </section> -->
+
+    <section id="connect" class="cta-section" aria-labelledby="connect-title">
+      <div class="cta-content">
+        <p class="eyebrow">Connect</p>
+        <h2 id="connect-title">Where to find me?</h2>
+        <p>Find me on these platforms.</p>
+      </div>
+      <div class="social-icons">
+        <a href="https://discord.com/users/1169004167663194235" target="_blank" aria-label="Discord Profile">
+          <img src="assets/media/discord.png" alt="Discord Logo" />
+        </a>
+        <a href="https://open.spotify.com/user/31b37pzsrkyu77frpvwxkg36eloe?si=97cca9bcd2604faa" target="_blank" aria-label="Spotify Profile">
+          <img src="assets/media/spotify.png" alt="Spotify Logo" />
+        </a>
+        <a href="https://github.com/g3nn3sis" target="_blank" aria-label="Github Profile">
+          <img src="assets/media/github-logo.png" alt="Github Logo" />
+        </a>
+        <a href="https://steamcommunity.com/id/g3nn3sis" target="_blank" aria-label="Steam Profile">
+          <img src="assets/media/steam.png" alt="Steam" />
+        </a>
+      </div>
     </section>
   </main>
 
   <footer>
-    <div class="social-icons">
-      <a href="https://discord.com/users/1169004167663194235" target="_blank" aria-label="Discord Profile">
-        <img src="assets/media/discord.png" alt="Discord Logo" />
-      </a>
-      <a href="https://open.spotify.com/user/31b37pzsrkyu77frpvwxkg36eloe?si=97cca9bcd2604faa" target="_blank" aria-label="Spotify Profile">
-        <img src="assets/media/spotify.png" alt="Spotify Logo" />
-      </a>
-      <a href="https://github.com/g3nn3sis" target="_blank" aria-label="Github Profile">
-        <img src="assets/media/github-logo.png" alt="Github Logo" />
-      </a>
-      <a href="https://steamcommunity.com/id/g3nn3sis" target="_blank" aria-label="Steam Profile">
-        <img src="assets/media/steam.png" alt="Steam" />
-      </a>
-    </div>
     <p>&copy; 2026 gennesis.cc — Please don't steal.</p>
   </footer>
   <script src="assets/app.js"></script>
