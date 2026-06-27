@@ -25,11 +25,13 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: #071017;
 }
 
 body {
   font-family: 'Rubik', sans-serif;
-  background: url(media/street_background.png) no-repeat center center fixed;
+  background-color: #071017;
+  background: #071017 url(media/street_background.png) no-repeat center center fixed;
   background-size: cover;
   color: var(--text-color);
   line-height: 1.6;
