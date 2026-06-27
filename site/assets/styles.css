@@ -121,11 +121,27 @@ body::after {
   color: var(--text-color);
 }
 
-main {
-  width: min(1120px, calc(100% - 2rem));
+.main-container {
+  width: min(1400px, calc(100% - 2rem));
   margin: 0 auto;
   padding: 1.25rem 0 2rem;
   flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 500px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .hero,
@@ -415,6 +431,46 @@ main {
   gap: 1rem;
 }
 
+.announcements-panel {
+  position: relative;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 32px var(--surface-shadow);
+  border-radius: 1.35rem;
+  overflow: hidden;
+  transform: translateY(0);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  padding: 1.35rem 1.4rem;
+  animation: panelRise 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: 0.1s;
+}
+
+.announcements-panel:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px var(--surface-shadow);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.announcements-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  opacity: 0.5;
+}
+
+.announcement-content {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  font-size: 0.95rem;
+}
+
 .social-icons {
   display: flex;
   flex-wrap: wrap;
@@ -480,6 +536,16 @@ footer {
   .hero__panel {
     max-width: 420px;
   }
+
+  .main-container {
+    grid-template-columns: 1fr;
+    width: min(100%, calc(100% - 1rem));
+    padding-top: 1rem;
+  }
+
+  .right-column {
+    position: static;
+  }
 }
 
 @media (max-width: 640px) {
@@ -492,7 +558,7 @@ footer {
     align-items: flex-start;
   }
 
-  main {
+  .main-container {
     width: min(100%, calc(100% - 1rem));
     padding-top: 1rem;
   }

@@ -18,8 +18,9 @@
     </div>
   </header>
 
-  <main id="top">
-    <section id="about" class="content-section" aria-labelledby="about-title">
+  <div id="top" class="main-container">
+    <div class="left-column">
+        <section id="about" class="content-section" aria-labelledby="about-title">
       <div class="section-heading">
         <p class="eyebrow">About</p>
         <h2 id="about-title">Hello! I'm gennesis :)</h2>
@@ -90,32 +91,49 @@
       <div id="github-projects" class="projects-grid"></div>
     </section> -->
 
-    <section id="connect" class="cta-section" aria-labelledby="connect-title">
-      <div class="cta-content">
-        <p class="eyebrow">Connect</p>
-        <h2 id="connect-title">Where to find me?</h2>
-        <p>Find me on these platforms.</p>
+        <section id="connect" class="cta-section" aria-labelledby="connect-title">
+          <div class="cta-content">
+            <p class="eyebrow">Connect</p>
+            <h2 id="connect-title">Where to find me?</h2>
+            <p>Find me on these platforms.</p>
+          </div>
+          <div class="social-icons">
+            <a href="https://discord.com/users/1169004167663194235" target="_blank" aria-label="Discord Profile">
+              <img src="assets/media/discord.png" alt="Discord Logo" />
+            </a>
+            <a href="https://open.spotify.com/user/31b37pzsrkyu77frpvwxkg36eloe?si=97cca9bcd2604faa" target="_blank" aria-label="Spotify Profile">
+              <img src="assets/media/spotify.png" alt="Spotify Logo" />
+            </a>
+            <a href="https://github.com/g3nn3sis" target="_blank" aria-label="Github Profile">
+              <img src="assets/media/github-logo.png" alt="Github Logo" />
+            </a>
+            <a href="https://steamcommunity.com/id/g3nn3sis" target="_blank" aria-label="Steam Profile">
+              <img src="assets/media/steam.png" alt="Steam" />
+            </a>
+          </div>
+        </section>
       </div>
-      <div class="social-icons">
-        <a href="https://discord.com/users/1169004167663194235" target="_blank" aria-label="Discord Profile">
-          <img src="assets/media/discord.png" alt="Discord Logo" />
-        </a>
-        <a href="https://open.spotify.com/user/31b37pzsrkyu77frpvwxkg36eloe?si=97cca9bcd2604faa" target="_blank" aria-label="Spotify Profile">
-          <img src="assets/media/spotify.png" alt="Spotify Logo" />
-        </a>
-        <a href="https://github.com/g3nn3sis" target="_blank" aria-label="Github Profile">
-          <img src="assets/media/github-logo.png" alt="Github Logo" />
-        </a>
-        <a href="https://steamcommunity.com/id/g3nn3sis" target="_blank" aria-label="Steam Profile">
-          <img src="assets/media/steam.png" alt="Steam" />
-        </a>
-      </div>
-    </section>
-  </main>
 
-  <footer>
-    <p>&copy; 2026 gennesis.cc — Please don't steal.</p>
-  </footer>
+      <aside class="right-column">
+        <section class="announcements-panel" aria-labelledby="announcements-title">
+          <div class="section-heading">
+            <p class="eyebrow">Updates</p>
+            <h2 id="announcements-title">Announcements</h2>
+          </div>
+          <div class="announcement-content">
+            <p>Coming soon...</p>
+          </div>
+        </section>
+
+        <section id="projects" class="content-section" aria-labelledby="projects-title">
+          <div class="section-heading">
+            <p class="eyebrow">Projects</p>
+            <h2 id="projects-title">Github Projects</h2>
+          </div>
+          <div id="github-projects" class="projects-grid"></div>
+        </section>
+      </aside>
+    </div>
   <script src="assets/app.js"></script>
 </body>
 </html>
