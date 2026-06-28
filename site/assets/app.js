@@ -65,8 +65,93 @@ const GitHubLoader = {
   },
 };
 
+const AnnouncementLoader = {
+  storageKey: 'gennesis-announcement-cache',
+  ttlMs: 1000 * 60 * 60,
+
+  init: async function () {
+    const container = document.getElementById('announcement-content');
+    if (!container) {
+      return;
+    }
+
+    const cached = this.getCachedAnnouncement();
+    if (cached) {
+      this.renderMessage(container, cached);
+      return;
+    }
+
+    container.innerHTML = '<p>Loading announcement…</p>';
+
+    try {
+      const response = await fetch('https://core.gennesis.cc/api/v1/web/titleData');
+
+      if (!response.ok) {
+        throw new Error(`Announcement API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const message = data && typeof data === 'object' ? data.motd : '';
+
+      if (message) {
+        this.cacheAnnouncement(message);
+        this.renderMessage(container, message);
+      } else {
+        container.innerHTML = '<p>No announcement available right now.</p>';
+      }
+    } catch (error) {
+      console.error('Error fetching announcement:', error);
+      container.innerHTML = '<p>Announcements are temporarily unavailable.</p>';
+    }
+  },
+
+  getCachedAnnouncement: function () {
+    try {
+      const rawValue = window.localStorage.getItem(this.storageKey);
+      if (!rawValue) {
+        return null;
+      }
+
+      const parsedValue = JSON.parse(rawValue);
+      if (!parsedValue || typeof parsedValue !== 'object') {
+        return null;
+      }
+
+      if (Date.now() - parsedValue.cachedAt > this.ttlMs) {
+        window.localStorage.removeItem(this.storageKey);
+        return null;
+      }
+
+      return parsedValue.message || null;
+    } catch (error) {
+      console.error('Error reading cached announcement:', error);
+      return null;
+    }
+  },
+
+  cacheAnnouncement: function (message) {
+    try {
+      window.localStorage.setItem(
+        this.storageKey,
+        JSON.stringify({ message, cachedAt: Date.now() })
+      );
+    } catch (error) {
+      console.error('Error caching announcement:', error);
+    }
+  },
+
+  renderMessage: function (container, message) {
+    const paragraph = document.createElement('p');
+    paragraph.textContent = message;
+    container.innerHTML = '';
+    container.appendChild(paragraph);
+  },
+};
+
 document.addEventListener('DOMContentLoaded', function () {
   if (document.getElementById('github-projects')) {
     GitHubLoader.init(6);
   }
+
+  AnnouncementLoader.init();
 });
