@@ -4,6 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>gennesis.cc</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="description" content="gennesis.cc - an old-school corner of the web.">
+    <meta name="keywords" content="gennesis, retro, pixel, minecraft, personal site, homepage">
+    <meta name="author" content="gennesis">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#000000">
+    <link rel="canonical" href="https://gennesis.cc/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gennesis.cc/">
+    <meta property="og:site_name" content="gennesis.cc">
+    <meta property="og:title" content="gennesis.cc">
+    <meta property="og:description" content="An old-school corner of the web.">
+    <meta property="og:image" content="https://gennesis.cc/assets/title.gif">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="gennesis.cc">
+    <meta name="twitter:description" content="An old-school corner of the web.">
+    <meta name="twitter:image" content="https://gennesis.cc/assets/title.gif">
+
     <style>
         @font-face {
             font-family: 'Minecraft';
@@ -93,6 +115,144 @@
             font-size: 0.8rem;
             opacity: 0.5;
             letter-spacing: 0.1rem;
+        }
+
+        .fire {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 160px;
+            pointer-events: none;
+            image-rendering: pixelated;
+            opacity: 0.9;
+            z-index: 1;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .entry-text,
+            .title-container img:hover,
+            .links a:hover,
+            a:hover,
+            button:hover,
+            img:hover,
+            .content p:hover,
+            .content p a:hover,
+            .modal,
+            .modal-overlay,
+            .main-content,
+            .entry-screen {
+                animation: none !important;
+                transition: none !important;
+            }
+            .entry-text {
+                opacity: 1;
+            }
+        }
+
+        @media (prefers-contrast: high) {
+            .links a,
+            .modal-btn,
+            .content p a {
+                border-width: 3px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 1.25rem;
+                border-width: 1px;
+            }
+            .entry-text {
+                font-size: 0.875rem;
+                letter-spacing: 0.1rem;
+            }
+            .content p {
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+            .links a {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9375rem;
+                min-height: 44px;
+                min-width: 44px;
+            }
+            .modal {
+                padding: 1.5rem 1.25rem;
+                margin: 1rem;
+            }
+            .modal-btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9375rem;
+                min-height: 44px;
+                min-width: 44px;
+            }
+            .copyright {
+                font-size: 0.7rem;
+            }
+            .fire {
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .main-content {
+                padding: 1rem;
+            }
+            .modal {
+                padding: 1rem;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            .main-content {
+                padding: 1rem 2rem;
+            }
+            .entry-text {
+                font-size: 0.875rem;
+            }
+            .fire {
+                height: 80px;
+            }
+        }
+
+        @supports (padding: max(0px)) {
+            .main-content {
+                padding-bottom: max(2rem, env(safe-area-inset-bottom) + 1rem);
+            }
+            .modal {
+                padding-bottom: max(2rem, env(safe-area-inset-bottom) + 1rem);
+            }
+        }
+
+        .links a:focus-visible,
+        .modal-btn:focus-visible,
+        .content p a:focus-visible,
+        .entry-screen:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        .no-hover .links a:hover,
+        .no-hover .title-container img:hover,
+        .no-hover a:hover,
+        .no-hover button:hover,
+        .no-hover img:hover,
+        .no-hover .content p:hover,
+        .no-hover .content p a:hover {
+            transform: none;
+            background-color: transparent;
+            color: inherit;
+        }
+
+        .no-hover .modal-btn:hover {
+            background-color: transparent;
+            color: #ffffff;
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 2;
         }
 
         .title-container img:hover {
@@ -291,8 +451,15 @@
             </a>
         </div>
         <div class="copyright">&copy; gennesis.cc 2026</div>
+        <div id="version" style="position:absolute;bottom:0.5rem;left:0.5rem;font-size:0.55rem;opacity:0.35;letter-spacing:0.05rem;">
+            <a href="https://github.com/g3nn3sis/gennesis.cc/commit/{{COMMIT_SHA}}" target="_blank" rel="noopener" style="color:#fff;text-decoration:none;">
+                {{COMMIT_SHORT}}
+            </a>
+        </div>
     </div>
     </div>
+
+    <canvas class="fire" id="fireCanvas" aria-hidden="false"></canvas>
 
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
