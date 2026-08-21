@@ -1,7 +1,12 @@
 const fs = require('fs');
 const html = 'site/index.html';
 
+const fullSha = process.env.VERCEL_GIT_COMMIT_SHA || '';
+const shortSha = fullSha ? fullSha.slice(0, 7) : 'dev';
+const branch = process.env.VERCEL_GIT_COMMIT_REF || 'local';
+
 let content = fs.readFileSync(html, 'utf8');
-content = content.replace('{{COMMIT_SHA}}', process.env.VERCEL_GIT_COMMIT_SHA || 'local');
-content = content.replace('{{COMMIT_SHORT}}', process.env.VERCEL_GIT_COMMIT_SHORT_SHA || 'dev');
+content = content.replace('{{COMMIT_SHA}}', fullSha || 'local');
+content = content.replace('{{COMMIT_SHORT}}', shortSha);
+content = content.replace('{{BRANCH}}', branch);
 fs.writeFileSync(html, content);
