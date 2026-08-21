@@ -1,5 +1,5 @@
 const fs = require('fs');
-const html = 'index.html';
+const html = 'site/index.html';
 
 let content = fs.readFileSync(html, 'utf8');
 content = content.replace('{{COMMIT_SHA}}', process.env.VERCEL_GIT_COMMIT_SHA || 'local');
