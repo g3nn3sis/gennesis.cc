@@ -1,139 +1,369 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>gennesis | dfmna</title>
-  <meta name="description" content="gennesis.cc — a cool website" />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gennesis.cc</title>
+    <style>
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('https://cdn.jsdelivr.net/npm/typeface-minecraft@1.0.0/files/minecraft.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Minecraft', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .title-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title-container img {
+            max-width: 100%;
+            height: auto;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        .content {
+            text-align: center;
+            max-width: 800px;
+            padding: 0 1rem;
+        }
+
+        .content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .links a:hover {
+            background-color: #ffffff;
+            color: #000000;
+            transform: scale(1.05);
+        }
+
+        .links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            flex-shrink: 0;
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            letter-spacing: 0.1rem;
+        }
+
+        .title-container img:hover {
+            transform: scale(1.02);
+            transition: transform 0.2s ease;
+        }
+
+        a:hover, button:hover, img:hover, .content p:hover {
+            transform: scale(1.02);
+            transition: transform 0.2s ease;
+        }
+
+        .content p a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .content p a:hover {
+            transform: scale(1.02);
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.15) 2px,
+                rgba(0, 0, 0, 0.15) 4px
+            );
+            z-index: 1000;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
+            z-index: 999;
+        }
+
+        .entry-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .entry-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .entry-text {
+            font-size: 1rem;
+            letter-spacing: 0.2rem;
+            opacity: 0;
+            animation: fade-in 0.6s ease-out forwards, pulse 2s ease-in-out infinite 0.6s;
+        }
+
+        @keyframes fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            border: 2px solid #ffffff;
+            padding: 2rem;
+            max-width: 800px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: #000000;
+            border: 2px solid #ffffff;
+            padding: 2rem 3rem;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.visible .modal {
+            transform: scale(1);
+        }
+
+        .modal p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            padding: 0.5rem 1.5rem;
+            font-family: 'Minecraft', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn:hover {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .main-content.blurred {
+            filter: blur(4px);
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="site-header__inner">
-      <a class="brand" href="#top">gennesis | dfmna</a>
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="#about">About</a>
-      </nav>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <div class="entry-screen" id="entryScreen">
+        <div class="entry-text">click to enter</div>
     </div>
-  </header>
 
-  <div id="top" class="main-container">
-    <div class="left-column">
-        <section id="about" class="content-section" aria-labelledby="about-title">
-      <div class="section-heading">
-        <p class="eyebrow">About</p>
-        <h2 id="about-title">Hello! I'm gennesis :)</h2>
-      </div>
-      <div class="content-grid">
-        <article class="card">
-          <h3>What is this for?</h3>
-          <p>I honestly don't know, but hi I'm gennesis!</p>
-        </article>
-        <article class="card">
-          <h3>Learning</h3>
-          <div class="pill-row">
-            <span class="pill">C#</span>
-            <span class="pill">Python</span>
-            <span class="pill">SQL</span>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="playlist" class="content-section" aria-labelledby="playlist-title">
-      <div class="section-heading">
-        <p class="eyebrow">Spotify
-        </p>
-        <h2 id="playlist-title">Attractions</h2>
-      </div>
-      <div class="showcase-grid">
-        <article class="card card--wide">
-          <h3>General Playlist</h3>
-          <p>A mix of songs that I often listen too.</p>
-          <div class="spotifyembed">
-            <iframe
-              data-testid="embed-iframe"
-              src="https://open.spotify.com/embed/playlist/48GJHh09DHg3IjIYwsHaoT?utm_source=gennesis.cc"
-              width="100%"
-              height="152"
-              frameBorder="0"
-              allowfullscreen=""
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-            ></iframe>
-          </div>
-        </article>
-        <article class="card card--wide">
-          <h3>Radiohead & LoveJoy</h3>
-          <p>A mix of Radiohead and LoveJoy tracks.</p>
-          <div class="spotifyembed">
-            <iframe
-              data-testid="embed-iframe"
-              src="https://open.spotify.com/embed/playlist/0IGMcxmJgwM7N2ICW9FRtC?si=a29051cece924eef?utm_source=gennesis.cc"
-              width="100%"
-              height="152"
-              frameBorder="0"
-              allowfullscreen=""
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-            ></iframe>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- <section id="projects" class="content-section" aria-labelledby="projects-title">
-      <div class="section-heading">
-        <p class="eyebrow">Projects</p>
-        <h2 id="projects-title">Recent work and experiments.</h2>
-      </div>
-      <div id="github-projects" class="projects-grid"></div>
-    </section> -->
-
-        <section id="connect" class="cta-section" aria-labelledby="connect-title">
-          <div class="cta-content">
-            <p class="eyebrow">Connect</p>
-            <h2 id="connect-title">Where to find me?</h2>
-            <p>Find me on these platforms.</p>
-          </div>
-          <div class="social-icons">
-            <a href="https://discord.com/users/1169004167663194235" target="_blank" aria-label="Discord Profile">
-              <img src="assets/media/discord.png" alt="Discord Logo" />
-            </a>
-            <a href="https://open.spotify.com/user/31b37pzsrkyu77frpvwxkg36eloe?si=97cca9bcd2604faa" target="_blank" aria-label="Spotify Profile">
-              <img src="assets/media/spotify.png" alt="Spotify Logo" />
-            </a>
-            <a href="https://github.com/g3nn3sis" target="_blank" aria-label="Github Profile">
-              <img src="assets/media/github-logo.png" alt="Github Logo" />
-            </a>
-            <a href="https://steamcommunity.com/id/g3nn3sis" target="_blank" aria-label="Steam Profile">
-              <img src="assets/media/steam.png" alt="Steam" />
-            </a>
-          </div>
-        </section>
-      </div>
-
-      <aside class="right-column">
-        <section class="announcements-panel" aria-labelledby="announcements-title">
-          <div class="section-heading">
-            <p class="eyebrow">Updates</p>
-            <h2 id="announcements-title">Announcements</h2>
-          </div>
-          <div id="announcement-content" class="announcement-content" aria-live="polite">
-            <p>Loading announcement…</p>
-          </div>
-        </section>
-
-        <section id="projects" class="content-section" aria-labelledby="projects-title">
-          <div class="section-heading">
-            <p class="eyebrow">Projects</p>
-            <h2 id="projects-title">Github Projects</h2>
-          </div>
-          <div id="github-projects" class="projects-grid"></div>
-        </section>
-      </aside>
+    <div class="main-content" id="mainContent">
+        <div class="title-container">
+        <img src="assets/title.gif" alt="gennesis.cc" />
     </div>
-  <script src="assets/app.js"></script>
+    
+    <div class="content">
+        <p>Welcome,<br>Contact me here: <a href="mailto:j87038456@protonmail.com">j87038456@protonmail.com</a></p>
+        <div class="links">
+            <a href="https://github.com/g3nn3sis">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                </svg>
+                GitHub
+            </a>
+            <a href="mailto:j87038456@protonmail.com">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                Contact
+            </a>
+        </div>
+        <div class="copyright">&copy; gennesis.cc 2026</div>
+    </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <p>Leave this site?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" id="modalCancel">Stay</button>
+                <button class="modal-btn" id="modalConfirm">Leave</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const entryScreen = document.getElementById('entryScreen');
+        const mainContent = document.getElementById('mainContent');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalConfirm = document.getElementById('modalConfirm');
+        const modalCancel = document.getElementById('modalCancel');
+
+        let pendingUrl = null;
+
+        function enterSite() {
+            entryScreen.classList.add('hidden');
+            mainContent.classList.add('visible');
+        }
+
+        function showModal(url) {
+            pendingUrl = url;
+            modalOverlay.classList.add('visible');
+            mainContent.classList.add('blurred');
+        }
+
+        function hideModal() {
+            modalOverlay.classList.remove('visible');
+            mainContent.classList.remove('blurred');
+            pendingUrl = null;
+        }
+
+        function goToUrl() {
+            if (pendingUrl) {
+                window.open(pendingUrl, '_blank', 'noopener,noreferrer');
+            }
+            hideModal();
+        }
+
+        entryScreen.addEventListener('click', enterSite);
+        entryScreen.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                enterSite();
+            }
+        });
+
+        document.querySelectorAll('a[href^="http"], a[href^="mailto:"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                showModal(link.href);
+            });
+        });
+
+        modalConfirm.addEventListener('click', goToUrl);
+        modalCancel.addEventListener('click', hideModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) hideModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (modalOverlay.classList.contains('visible')) {
+                if (e.key === 'Escape') hideModal();
+                if (e.key === 'Enter') goToUrl();
+            }
+        });
+    </script>
 </body>
 </html>
