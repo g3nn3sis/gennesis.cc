@@ -419,11 +419,16 @@
             pointer-events: none;
         }
 
-        .audio-toggle {
+        .audio-control {
             position: fixed;
             top: 0.75rem;
             right: 0.75rem;
             z-index: 1500;
+            display: flex;
+            align-items: center;
+        }
+
+        .audio-toggle {
             background: transparent;
             color: #ffffff;
             border: 2px solid #ffffff;
@@ -436,6 +441,7 @@
             font-family: 'Minecraft', monospace;
             transition: all 0.2s ease;
             opacity: 0.7;
+            flex-shrink: 0;
         }
 
         .audio-toggle:hover {
@@ -450,11 +456,78 @@
             height: 16px;
         }
 
+        .audio-slider-wrap {
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            max-width: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: max-width 0.25s ease, opacity 0.2s ease, visibility 0.25s ease;
+        }
+
+        .audio-control:hover .audio-slider-wrap,
+        .audio-control:focus-within .audio-slider-wrap {
+            max-width: 7rem;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .audio-slider-inner {
+            border: 2px solid #ffffff;
+            border-right: none;
+            background: #000000;
+            padding: 0 0.75rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .audio-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 5rem;
+            height: 2px;
+            background: #ffffff;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .audio-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .audio-slider::-moz-range-thumb {
+            width: 10px;
+            height: 10px;
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+            border-radius: 0;
+        }
+
+        .audio-slider::-moz-range-track {
+            width: 100%;
+            height: 2px;
+            background: #ffffff;
+        }
+
         @media (max-width: 480px) {
-            .audio-toggle {
+            .audio-control {
                 top: 0.5rem;
                 right: 0.5rem;
+            }
+            .audio-toggle {
                 width: 2.5rem;
+                height: 2.5rem;
+            }
+            .audio-slider-inner {
                 height: 2.5rem;
             }
         }
@@ -464,16 +537,23 @@
     <div class="scanlines"></div>
     <div class="vignette"></div>
 
-    <audio id="bgAudio" src="https://r2.gennesis.cc/89395cee6fa00b64.mp3" preload="auto"></audio>
+    <audio id="bgAudio" src="https://r2.gennesis.cc/89395cee6fa00b64.mp3" preload="auto" loop></audio>
 
-    <button class="audio-toggle" id="audioToggle" aria-label="Mute audio" title="Mute">
-        <svg id="audioIconOn" viewBox="0 0 24 24" fill="currentColor" style="display:block;">
-            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-        </svg>
-        <svg id="audioIconOff" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
-            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4l-1.88 1.88L12 7.76V4z"/>
-        </svg>
-    </button>
+    <div class="audio-control" id="audioControl">
+        <div class="audio-slider-wrap">
+            <div class="audio-slider-inner">
+                <input type="range" class="audio-slider" id="audioSlider" min="0" max="100" value="100" aria-label="Volume">
+            </div>
+        </div>
+        <button class="audio-toggle" id="audioToggle" aria-label="Mute audio" title="Mute">
+            <svg id="audioIconOn" viewBox="0 0 24 24" fill="currentColor" style="display:block;">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+            <svg id="audioIconOff" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4l-1.88 1.88L12 7.76V4z"/>
+            </svg>
+        </button>
+    </div>
 
     <div class="entry-screen" id="entryScreen">
         <div class="entry-text">click to enter</div>
@@ -537,6 +617,7 @@
         const audioToggle = document.getElementById('audioToggle');
         const audioIconOn = document.getElementById('audioIconOn');
         const audioIconOff = document.getElementById('audioIconOff');
+        const audioSlider = document.getElementById('audioSlider');
 
         let pendingUrl = null;
         let audioMuted = false;
@@ -588,6 +669,26 @@
             audioMuted = !audioMuted;
             bgAudio.muted = audioMuted;
             updateAudioIcon();
+        });
+
+        audioSlider.addEventListener('input', () => {
+            const vol = Number(audioSlider.value) / 100;
+            bgAudio.volume = vol;
+            audioMuted = vol === 0;
+            bgAudio.muted = audioMuted;
+            updateAudioIcon();
+        });
+
+        audioSlider.addEventListener('change', () => {
+            audioSlider.blur();
+        });
+
+        audioSlider.addEventListener('mouseup', () => {
+            audioSlider.blur();
+        });
+
+        audioSlider.addEventListener('touchend', () => {
+            audioSlider.blur();
         });
 
         document.querySelectorAll('a[href^="http"], a[href^="mailto:"]').forEach(link => {
