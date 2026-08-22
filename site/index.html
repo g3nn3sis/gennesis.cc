@@ -418,11 +418,142 @@
             filter: blur(4px);
             pointer-events: none;
         }
+
+        .audio-control {
+            position: fixed;
+            top: 0.75rem;
+            right: 0.75rem;
+            z-index: 1500;
+            display: flex;
+            align-items: center;
+        }
+
+        .audio-toggle {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-family: 'Minecraft', monospace;
+            transition: all 0.2s ease;
+            opacity: 0.7;
+            flex-shrink: 0;
+        }
+
+        .audio-toggle:hover {
+            background-color: #ffffff;
+            color: #000000;
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        .audio-toggle svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .audio-slider-wrap {
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            max-width: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: max-width 0.25s ease, opacity 0.2s ease, visibility 0.25s ease;
+        }
+
+        .audio-control:hover .audio-slider-wrap,
+        .audio-control:focus-within .audio-slider-wrap {
+            max-width: 7rem;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .audio-slider-inner {
+            border: 2px solid #ffffff;
+            border-right: none;
+            background: #000000;
+            padding: 0 0.75rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .audio-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 5rem;
+            height: 2px;
+            background: #ffffff;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .audio-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .audio-slider::-moz-range-thumb {
+            width: 10px;
+            height: 10px;
+            background: #ffffff;
+            border: none;
+            cursor: pointer;
+            border-radius: 0;
+        }
+
+        .audio-slider::-moz-range-track {
+            width: 100%;
+            height: 2px;
+            background: #ffffff;
+        }
+
+        @media (max-width: 480px) {
+            .audio-control {
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+            .audio-toggle {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+            .audio-slider-inner {
+                height: 2.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="scanlines"></div>
     <div class="vignette"></div>
+
+    <audio id="bgAudio" preload="auto" loop></audio>
+
+    <div class="audio-control" id="audioControl">
+        <div class="audio-slider-wrap">
+            <div class="audio-slider-inner">
+                <input type="range" class="audio-slider" id="audioSlider" min="0" max="100" value="100" aria-label="Volume">
+            </div>
+        </div>
+        <button class="audio-toggle" id="audioToggle" aria-label="Mute audio" title="Mute">
+            <svg id="audioIconOn" viewBox="0 0 24 24" fill="currentColor" style="display:block;">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+            <svg id="audioIconOff" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4l-1.88 1.88L12 7.76V4z"/>
+            </svg>
+        </button>
+    </div>
 
     <div class="entry-screen" id="entryScreen">
         <div class="entry-text">click to enter</div>
@@ -430,7 +561,9 @@
 
     <div class="main-content" id="mainContent">
         <div class="title-container">
-        <img src="https://r2.gennesis.cc/9f51a7472a58e26f.gif" alt="gennesis.cc" />
+        <a class="title-link" href="https://gennesis.cc" aria-label="Go to gennesis.cc">
+            <img src="https://r2.gennesis.cc/9f51a7472a58e26f.gif" alt="gennesis.cc" />
+        </a>
     </div>
     
     <div class="content">
@@ -441,6 +574,12 @@
                     <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
                 </svg>
                 GitHub
+            </a>
+            <a href="https://www.tiktok.com/@gggennnesssisss">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                    <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z"/>
+                </svg>
+                TikTok
             </a>
             <a href="mailto:j87038456@protonmail.com">
                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
@@ -482,12 +621,37 @@
         const modalOverlay = document.getElementById('modalOverlay');
         const modalConfirm = document.getElementById('modalConfirm');
         const modalCancel = document.getElementById('modalCancel');
+        const bgAudio = document.getElementById('bgAudio');
+        const audioToggle = document.getElementById('audioToggle');
+        const audioIconOn = document.getElementById('audioIconOn');
+        const audioIconOff = document.getElementById('audioIconOff');
+        const audioSlider = document.getElementById('audioSlider');
+
+        const songs = [
+            'https://r2.gennesis.cc/89395cee6fa00b64.mp3',
+            'https://r2.gennesis.cc/e04a764c77b8cb7c.mp3',
+            'https://r2.gennesis.cc/6384738f8f24bc9e.mp3'
+        ];
 
         let pendingUrl = null;
+        let audioMuted = false;
+
+        bgAudio.src = songs[Math.floor(Math.random() * songs.length)];
+
+        function updateAudioIcon() {
+            audioIconOn.style.display = audioMuted ? 'none' : 'block';
+            audioIconOff.style.display = audioMuted ? 'block' : 'none';
+            audioToggle.setAttribute('aria-label', audioMuted ? 'Unmute audio' : 'Mute audio');
+            audioToggle.setAttribute('title', audioMuted ? 'Unmute' : 'Mute');
+        }
 
         function enterSite() {
             entryScreen.classList.add('hidden');
             mainContent.classList.add('visible');
+            bgAudio.muted = audioMuted;
+            bgAudio.play().catch(err => {
+                console.warn('Playback failed:', err);
+            });
         }
 
         function showModal(url) {
@@ -517,7 +681,33 @@
             }
         });
 
-        document.querySelectorAll('a[href^="http"], a[href^="mailto:"]').forEach(link => {
+        audioToggle.addEventListener('click', () => {
+            audioMuted = !audioMuted;
+            bgAudio.muted = audioMuted;
+            updateAudioIcon();
+        });
+
+        audioSlider.addEventListener('input', () => {
+            const vol = Number(audioSlider.value) / 100;
+            bgAudio.volume = vol;
+            audioMuted = vol === 0;
+            bgAudio.muted = audioMuted;
+            updateAudioIcon();
+        });
+
+        audioSlider.addEventListener('change', () => {
+            audioSlider.blur();
+        });
+
+        audioSlider.addEventListener('mouseup', () => {
+            audioSlider.blur();
+        });
+
+        audioSlider.addEventListener('touchend', () => {
+            audioSlider.blur();
+        });
+
+        document.querySelectorAll('a[href^="http"]:not(.title-link), a[href^="mailto:"]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 showModal(link.href);
