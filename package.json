@@ -2,5 +2,8 @@
   "scripts": {
     "build": "node scripts/injection.js",
     "vercel-build": "npm run build"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
   }
 }
