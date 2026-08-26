@@ -1,10 +1,8 @@
 const fs = require('fs');
 const html = 'site/index.html';
-
-const fullSha = process.env.VERCEL_GIT_COMMIT_SHA || '';
+const fullSha = process.env.CF_PAGES_COMMIT_SHA || '';
 const shortSha = fullSha ? fullSha.slice(0, 7) : 'dev';
-const branch = process.env.VERCEL_GIT_COMMIT_REF || 'local';
-
+const branch = process.env.CF_PAGES_BRANCH || 'local';
 let content = fs.readFileSync(html, 'utf8');
 content = content.replace('{{COMMIT_SHA}}', fullSha || 'local');
 content = content.replace('{{COMMIT_SHORT}}', shortSha);
