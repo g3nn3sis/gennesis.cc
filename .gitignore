@@ -25,3 +25,7 @@ desktop.ini
 *.swo
 *.log
 logs/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
