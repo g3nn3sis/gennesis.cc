@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface LeaveModalProps {
   open: boolean;
@@ -9,17 +9,21 @@ interface LeaveModalProps {
 }
 
 export default function LeaveModal({ open, onStay, onLeave }: LeaveModalProps) {
+  const stayButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     if (!open) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    stayButtonRef.current?.focus();
+
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onStay();
-      if (e.key === "Enter") {
-        e.preventDefault();
-        onLeave();
-      }
     };
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      previousFocus?.focus();
+    };
   }, [open, onStay, onLeave]);
 
   return (
@@ -29,10 +33,10 @@ export default function LeaveModal({ open, onStay, onLeave }: LeaveModalProps) {
         if (e.target === e.currentTarget) onStay();
       }}
     >
-      <div className="modal" role="dialog" aria-modal="true" aria-label="Leave gennesis.cc?">
-        <p>Are you sure?</p>
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="leave-modal-title">
+        <p id="leave-modal-title">Are you sure?</p>
         <div className="modal-buttons">
-          <button type="button" className="modal-btn" onClick={onStay}>
+          <button ref={stayButtonRef} type="button" className="modal-btn" onClick={onStay}>
             Stay
           </button>
           <button type="button" className="modal-btn" onClick={onLeave}>

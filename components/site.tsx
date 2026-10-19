@@ -37,21 +37,17 @@ export default function Site({ build }: { build: BuildInfo }) {
       <div className="scanlines" />
       <div className="vignette" />
 
-      <audio ref={audioRef} preload="auto" loop />
+      <audio ref={audioRef} preload="none" loop />
       <AudioControl muted={muted} onToggle={toggleMuted} onVolumeChange={setVolume} />
 
-      <div
+      <button
+        type="button"
         className={`entry-screen${entered ? " hidden" : ""}`}
         onClick={enter}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            enter();
-          }
-        }}
+        aria-label="Enter gennesis.cc"
       >
         <div className="entry-text">click to enter</div>
-      </div>
+      </button>
 
       <main className={`main-content${entered ? " visible" : ""}${modalOpen ? " blurred" : ""}`}>
         <div className="title-container">
