@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Analytics } from "@vercel/analytics/next";
 import { ASSET_ORIGIN, SITE_NAME, SITE_URL, TITLE_IMAGE } from "@/lib/site";
 import "./globals.css";
 
@@ -49,10 +48,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <head>
         <link rel="preconnect" href={ASSET_ORIGIN} crossOrigin="" />
       </head>
-      <body>
-        {children}
-        <Analytics />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
