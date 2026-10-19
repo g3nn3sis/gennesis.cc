@@ -11,7 +11,7 @@ import SocialLinks from "./social-links";
 export default function Site({ build }: { build: BuildInfo }) {
   const [entered, setEntered] = useState(false);
   const [pendingUrl, setPendingUrl] = useState<string | null>(null);
-  const { audioRef, muted, play, toggleMuted, setVolume } = useBackgroundAudio(TRACKS);
+  const { audioRef, muted, play, toggleMuted, setVolume, volume } = useBackgroundAudio(TRACKS);
 
   const enter = () => {
     setEntered(true);
@@ -38,7 +38,7 @@ export default function Site({ build }: { build: BuildInfo }) {
       <div className="vignette" />
 
       <audio ref={audioRef} preload="none" loop />
-      <AudioControl muted={muted} onToggle={toggleMuted} onVolumeChange={setVolume} />
+      <AudioControl muted={muted} volume={volume} onToggle={toggleMuted} onVolumeChange={setVolume} />
 
       <button
         type="button"
