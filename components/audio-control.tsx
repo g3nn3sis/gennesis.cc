@@ -5,11 +5,12 @@ import { VolumeOffIcon, VolumeOnIcon } from "./icons";
 
 interface AudioControlProps {
   muted: boolean;
+  volume: number;
   onToggle: () => void;
   onVolumeChange: (volume: number) => void;
 }
 
-export default function AudioControl({ muted, onToggle, onVolumeChange }: AudioControlProps) {
+export default function AudioControl({ muted, volume, onToggle, onVolumeChange }: AudioControlProps) {
   const sliderRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function AudioControl({ muted, onToggle, onVolumeChange }: AudioC
             className="audio-slider"
             min={0}
             max={100}
-            defaultValue={100}
+            value={Math.round(volume * 100)}
             aria-label="Volume"
             onInput={(e) => onVolumeChange(Number(e.currentTarget.value) / 100)}
             onMouseUp={release}
