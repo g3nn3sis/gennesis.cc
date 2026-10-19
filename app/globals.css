@@ -334,6 +334,15 @@ a:hover, button:hover, img:hover, .content p:hover {
     text-align: center;
 }
 
+.not-found-title-image {
+    display: block;
+    width: min(100%, 34rem);
+    height: auto;
+    margin: 0 auto 1.5rem;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
 .not-found-code {
     font-size: clamp(4rem, 18vw, 8rem) !important;
     letter-spacing: 0.15em;
