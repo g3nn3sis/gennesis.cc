@@ -25,18 +25,28 @@ function isAudioSettings(value: unknown): value is AudioSettings {
 }
 
 let fallbackSettings: AudioSettings = { ...DEFAULT_SETTINGS };
+let cachedStoredSettings: string | null | undefined;
+let cachedSettings: AudioSettings = fallbackSettings;
 
 function getSettings(): AudioSettings {
   try {
     const storedSettings = localStorage.getItem(SETTINGS_KEY);
+    if (storedSettings === cachedStoredSettings) return cachedSettings;
+
+    cachedStoredSettings = storedSettings;
     if (storedSettings) {
       const settings = JSON.parse(storedSettings);
-      if (isAudioSettings(settings)) return settings;
+      if (isAudioSettings(settings)) {
+        fallbackSettings = settings;
+        cachedSettings = settings;
+        return cachedSettings;
+      }
     }
   } catch {
     // Fall back to this tab's settings when browser storage is unavailable.
   }
-  return fallbackSettings;
+  cachedSettings = fallbackSettings;
+  return cachedSettings;
 }
 
 function subscribeToSettings(onStoreChange: () => void) {
@@ -53,8 +63,11 @@ function subscribeToSettings(onStoreChange: () => void) {
 
 function saveSettings(settings: AudioSettings) {
   fallbackSettings = settings;
+  cachedSettings = settings;
   try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    const serializedSettings = JSON.stringify(settings);
+    localStorage.setItem(SETTINGS_KEY, serializedSettings);
+    cachedStoredSettings = serializedSettings;
   } catch {
     // Keep the in-memory setting when browser storage is unavailable.
   }
