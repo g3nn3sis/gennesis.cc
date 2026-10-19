@@ -7,17 +7,15 @@ export function useBackgroundAudio(tracks: readonly string[]) {
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) audio.src = tracks[Math.floor(Math.random() * tracks.length)];
-  }, [tracks]);
-
-  useEffect(() => {
     if (audioRef.current) audioRef.current.muted = muted;
   }, [muted]);
 
   const play = useCallback(() => {
-    audioRef.current?.play().catch((err) => console.warn("Playback failed:", err));
-  }, []);
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (!audio.src) audio.src = tracks[Math.floor(Math.random() * tracks.length)];
+    audio.play().catch((err) => console.warn("Playback failed:", err));
+  }, [tracks]);
 
   const toggleMuted = useCallback(() => setMuted((m) => !m), []);
 
