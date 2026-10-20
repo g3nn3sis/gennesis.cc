@@ -2,103 +2,185 @@
 
 import { useEffect, useRef } from "react";
 
-const MAX_HEAT = 36;
-const FRAME_INTERVAL = 1000 / 24;
+type FireGlyph = readonly [character: string, className: string];
 
-const COLOR_STOPS = [
-  { level: 0, color: [0, 0, 0, 0] },
-  { level: 5, color: [84, 8, 7, 34] },
-  { level: 12, color: [188, 22, 5, 165] },
-  { level: 20, color: [255, 73, 8, 232] },
-  { level: 28, color: [255, 156, 28, 250] },
-  { level: 34, color: [255, 220, 92, 255] },
-  { level: MAX_HEAT, color: [255, 247, 179, 255] },
+type Ember = {
+  x: number;
+  y: number;
+  intensity: number;
+  velocityX: number;
+  velocityY: number;
+};
+
+const FRAME_INTERVAL = 30;
+
+const FIRE: ReadonlyArray<readonly [number, string, string]> = [
+  [0, " ", ""],
+  [0.14, ".", "c1"],
+  [0.30, ":", "c1"],
+  [0.45, ";", "c2"],
+  [0.60, "i", "c3"],
+  [0.72, "|", "c3"],
+  [0.82, "I", "c4"],
+  [0.90, "#", "c4"],
+  [0.97, "&", "c5"],
+  [1.01, "@", "c5"],
 ];
 
-const PALETTE = Array.from({ length: MAX_HEAT + 1 }, (_, heat) => {
-  const upperIndex = COLOR_STOPS.findIndex((stop) => stop.level >= heat);
-  const upper = COLOR_STOPS[upperIndex];
-  const lower = COLOR_STOPS[Math.max(0, upperIndex - 1)];
-  const fraction = upper.level === lower.level ? 0 : (heat - lower.level) / (upper.level - lower.level);
+function glyphFor(heat: number): FireGlyph {
+  for (let index = FIRE.length - 1; index >= 0; index--) {
+    if (heat >= FIRE[index][0]) {
+      return [FIRE[index][1], FIRE[index][2]];
+    }
+  }
 
-  return upper.color.map((channel, index) =>
-    Math.round(lower.color[index] + (channel - lower.color[index]) * fraction),
-  );
-});
+  return [" ", ""];
+}
+
+function makeEmber(x: number, y: number, intensity: number): Ember {
+  return {
+    x,
+    y,
+    intensity,
+    velocityX: (Math.random() - 0.5) * 0.35,
+    velocityY: -0.25 - Math.random() * 0.65,
+  };
+}
 
 export default function RetroFire() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stageRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
+    const stage = stageRef.current;
+    if (!stage) return;
 
     const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let columns = 0;
-    let rows = 0;
-    let current = new Uint8Array(0);
-    let next = new Uint8Array(0);
-    let image = context.createImageData(1, 1);
+
+    let columns = 1;
+    let rows = 1;
+    let grid: Float32Array[] = [];
+    let embers: Ember[] = [];
     let frameId = 0;
     let lastFrame = 0;
-    let tick = 0;
 
-    const advance = () => {
-      for (let y = 0; y < rows - 1; y++) {
-        const row = y * columns;
-        const below = (y + 1) * columns;
+    const updateFire = () => {
+      const bottom = grid[rows - 1];
+
+      for (let x = 0; x < columns; x++) {
+        let heat = bottom[x] * 0.8;
+        if (Math.random() < 0.24) heat = Math.max(heat, 0.9 + Math.random() * 0.1);
+        if (Math.random() < 0.03) heat = 1;
+        bottom[x] = Math.max(0, heat);
+      }
+
+      for (let y = rows - 2; y >= 0; y--) {
+        const current = grid[y];
+        const below = grid[y + 1];
 
         for (let x = 0; x < columns; x++) {
-          const sourceX = Math.max(0, Math.min(columns - 1, x + Math.floor(Math.random() * 3) - 1));
-          const cooling = Math.floor(Math.random() * 3);
-          next[row + x] = Math.max(0, current[below + sourceX] - cooling);
+          const left = x === 0 ? columns - 1 : x - 1;
+          const right = x === columns - 1 ? 0 : x + 1;
+          const averagedHeat = (below[left] + below[x] + below[right]) / 3;
+          const heat = averagedHeat * (0.86 + Math.random() * 0.28) - 0.01;
+          current[x] = Math.max(0, heat);
+        }
+      }
+    };
+
+    const updateEmbers = () => {
+      if (Math.random() < 0.5) {
+        embers.push(
+          makeEmber(
+            Math.floor(Math.random() * columns),
+            rows - 1 - Math.floor(Math.random() * Math.max(1, Math.floor(rows * 0.12))),
+            0.85 + Math.random() * 0.15,
+          ),
+        );
+      }
+
+      if (Math.random() < 0.5) {
+        embers.push(
+          makeEmber(
+            Math.floor(Math.random() * columns),
+            Math.floor(Math.random() * Math.max(1, rows - Math.floor(rows * 0.15))),
+            0.25 + Math.random() * 0.5,
+          ),
+        );
+      }
+
+      for (let index = embers.length - 1; index >= 0; index--) {
+        const ember = embers[index];
+        ember.intensity -= Math.random() * 0.06;
+        ember.x += ember.velocityX;
+        ember.y += ember.velocityY;
+
+        if (ember.intensity <= 0 || ember.y < 0 || ember.x < 0 || ember.x >= columns) {
+          embers.splice(index, 1);
         }
       }
 
-      const bottom = (rows - 1) * columns;
-      for (let x = 0; x < columns; x++) {
-        const wave = Math.sin(x * 0.085 + tick * 0.14) * 2.5;
-        const flicker = (Math.random() - 0.5) * 8;
-        next[bottom + x] = Math.max(24, Math.min(MAX_HEAT, Math.round(32 + wave + flicker)));
-      }
-
-      [current, next] = [next, current];
-      tick++;
+      if (embers.length > 180) embers.splice(0, embers.length - 180);
     };
 
-    const draw = () => {
-      const pixels = image.data;
+    const render = () => {
+      const emberCells = new Map<number, FireGlyph>();
 
-      for (let index = 0; index < current.length; index++) {
-        const color = PALETTE[current[index]];
-        const offset = index * 4;
-        pixels[offset] = color[0];
-        pixels[offset + 1] = color[1];
-        pixels[offset + 2] = color[2];
-        pixels[offset + 3] = color[3];
+      for (const ember of embers) {
+        const x = Math.round(ember.x);
+        const y = Math.round(ember.y);
+
+        if (x < 0 || x >= columns || y < 0 || y >= rows) continue;
+
+        const className = ember.intensity > 0.7 ? "c4" : ember.intensity > 0.4 ? "c3" : "c2";
+        emberCells.set(y * columns + x, [ember.intensity > 0.5 ? "*" : ".", className]);
       }
 
-      context.putImageData(image, 0, 0);
+      const lines: string[] = [];
+
+      for (let y = 0; y < rows; y++) {
+        const parts: string[] = [];
+        let openClass = "";
+
+        for (let x = 0; x < columns; x++) {
+          const [character, className] = emberCells.get(y * columns + x) ?? glyphFor(grid[y][x]);
+
+          if (className !== openClass) {
+            if (openClass) parts.push("</span>");
+            if (className) parts.push('<span class="' + className + '">');
+            openClass = className;
+          }
+
+          parts.push(character === "&" ? "&amp;" : character);
+        }
+
+        if (openClass) parts.push("</span>");
+        lines.push(parts.join(""));
+      }
+
+      stage.innerHTML = lines.join("\n");
     };
 
-    const resize = () => {
-      const bounds = canvas.getBoundingClientRect();
-      const pixelSize = Math.max(4, Math.ceil(bounds.width / 480));
+    const layout = () => {
+      const fontSize = Math.max(12, Math.min(32, Math.round(window.innerWidth / 150)));
+      stage.style.fontSize = String(fontSize) + "px";
 
-      columns = Math.max(1, Math.ceil(bounds.width / pixelSize));
-      rows = Math.max(2, Math.ceil(bounds.height / pixelSize));
-      canvas.width = columns;
-      canvas.height = rows;
-      context.imageSmoothingEnabled = false;
+      const probe = document.createElement("span");
+      probe.textContent = "W";
+      probe.style.cssText =
+        'position:absolute;visibility:hidden;font-size:' +
+        fontSize +
+        'px;line-height:1;font-family:"Courier New",Courier,monospace;white-space:pre;';
+      document.body.appendChild(probe);
+      const characterWidth = Math.max(1, probe.getBoundingClientRect().width);
+      probe.remove();
 
-      current = new Uint8Array(columns * rows);
-      next = new Uint8Array(columns * rows);
-      image = context.createImageData(columns, rows);
-      tick = 0;
+      columns = Math.max(1, Math.floor(stage.clientWidth / characterWidth));
+      rows = Math.max(2, Math.ceil(stage.clientHeight / fontSize));
+      grid = Array.from({ length: rows }, () => new Float32Array(columns));
+      embers = [];
 
-      for (let step = 0; step < rows + 12; step++) advance();
-      draw();
+      for (let index = 0; index < rows + 12; index++) updateFire();
+      render();
     };
 
     const animate = (time: number) => {
@@ -106,20 +188,20 @@ export default function RetroFire() {
       if (time - lastFrame < FRAME_INTERVAL) return;
 
       lastFrame = time;
-      advance();
-      draw();
+      updateFire();
+      updateEmbers();
+      render();
     };
 
     const stop = () => {
-      window.cancelAnimationFrame(frameId);
+      if (frameId) window.cancelAnimationFrame(frameId);
       frameId = 0;
       lastFrame = 0;
     };
 
     const start = () => {
-      if (!frameId && !document.hidden && !motionPreference.matches) {
-        frameId = window.requestAnimationFrame(animate);
-      }
+      if (frameId || document.hidden || motionPreference.matches) return;
+      frameId = window.requestAnimationFrame(animate);
     };
 
     const updateMotion = () => {
@@ -132,20 +214,25 @@ export default function RetroFire() {
       else start();
     };
 
-    resize();
+    layout();
     start();
 
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", layout);
     document.addEventListener("visibilitychange", updateVisibility);
     motionPreference.addEventListener("change", updateMotion);
 
     return () => {
       stop();
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", layout);
       document.removeEventListener("visibilitychange", updateVisibility);
       motionPreference.removeEventListener("change", updateMotion);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="fire" aria-hidden="true" />;
+  return (
+    <>
+      <pre ref={stageRef} className="fire" aria-hidden="true" />
+      <div className="fire-burn" aria-hidden="true" />
+    </>
+  );
 }
