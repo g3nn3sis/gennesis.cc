@@ -12,7 +12,7 @@ type Ember = {
   velocityY: number;
 };
 
-const FRAME_INTERVAL = 30;
+const TICK_INTERVAL = 30;
 
 const FIRE: ReadonlyArray<readonly [number, string, string]> = [
   [0, " ", ""],
@@ -60,8 +60,7 @@ export default function RetroFire() {
     let rows = 1;
     let grid: Float32Array[] = [];
     let embers: Ember[] = [];
-    let frameId = 0;
-    let lastFrame = 0;
+    let intervalId: number | undefined;
 
     const updateFire = () => {
       const bottom = grid[rows - 1];
@@ -119,7 +118,7 @@ export default function RetroFire() {
         }
       }
 
-      if (embers.length > 180) embers.splice(0, embers.length - 180);
+      if (embers.length > 300) embers.splice(0, embers.length - 300);
     };
 
     const render = () => {
@@ -175,7 +174,7 @@ export default function RetroFire() {
       probe.remove();
 
       columns = Math.max(1, Math.floor(stage.clientWidth / characterWidth));
-      rows = Math.max(2, Math.ceil(stage.clientHeight / fontSize));
+      rows = Math.max(2, Math.floor(stage.clientHeight / fontSize));
       grid = Array.from({ length: rows }, () => new Float32Array(columns));
       embers = [];
 
@@ -183,25 +182,20 @@ export default function RetroFire() {
       render();
     };
 
-    const animate = (time: number) => {
-      frameId = window.requestAnimationFrame(animate);
-      if (time - lastFrame < FRAME_INTERVAL) return;
-
-      lastFrame = time;
+    const tick = () => {
       updateFire();
       updateEmbers();
       render();
     };
 
     const stop = () => {
-      if (frameId) window.cancelAnimationFrame(frameId);
-      frameId = 0;
-      lastFrame = 0;
+      if (intervalId !== undefined) window.clearInterval(intervalId);
+      intervalId = undefined;
     };
 
     const start = () => {
-      if (frameId || document.hidden || motionPreference.matches) return;
-      frameId = window.requestAnimationFrame(animate);
+      if (intervalId !== undefined || document.hidden || motionPreference.matches) return;
+      intervalId = window.setInterval(tick, TICK_INTERVAL);
     };
 
     const updateMotion = () => {
