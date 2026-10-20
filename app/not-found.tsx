@@ -13,17 +13,14 @@ export default function NotFound() {
       <div className="scanlines" />
       <div className="vignette" />
 
-      <main className="main-content visible not-found" aria-labelledby="not-found-title">
+      <main className="main-content visible not-found">
         <section className="content">
-          {/* eslint-disable-next-line @next/next/no-img-element -- animated GIF from R2 */}
-          <img className="not-found-title-image" src={TITLE_IMAGE} alt={SITE_NAME} />
-          <p className="not-found-code" aria-hidden="true">
-            404
-          </p>
-          <h1 id="not-found-title">lost in the void</h1>
-          <p>this page does not exist.</p>
+          <h1>
+            {/* eslint-disable-next-line @next/next/no-img-element -- animated GIF from R2 */}
+            <img className="not-found-title-image" src={TITLE_IMAGE} alt="404: page not found" />
+          </h1>
           <Link className="not-found-link" href="/">
-            return home
+            return to home
           </Link>
         </section>
       </main>
