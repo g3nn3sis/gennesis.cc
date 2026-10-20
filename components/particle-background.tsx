@@ -216,7 +216,7 @@ export default function ParticleBackground() {
       width = Math.max(1, window.innerWidth);
       height = Math.max(1, window.innerHeight);
       mobile = width < 640 || coarsePointer.matches;
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2);
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, width * height > 3_000_000 ? 1.25 : mobile ? 1.5 : 2);
 
       for (const canvas of [background, cursorCanvas]) {
         canvas.width = Math.round(width * pixelRatio);
@@ -226,7 +226,7 @@ export default function ParticleBackground() {
       backgroundContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
       cursorContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-      const spacing = mobile ? 46 : 39;
+      const spacing = mobile ? 46 : Math.max(39, Math.sqrt((width * height) / 1_800));
       const columns = Math.ceil(width / spacing);
       const rows = Math.ceil(height / spacing);
       const cellWidth = width / columns;
@@ -270,7 +270,7 @@ export default function ParticleBackground() {
       }
 
       drawDots(time, delta);
-      drawCursor(time, delta);
+      if (!coarsePointer.matches) drawCursor(time, delta);
     };
 
     const stop = () => {
