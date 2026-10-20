@@ -23,13 +23,16 @@ const obfuscationOptions = {
   transformObjectKeys: true,
 };
 
+// Obfuscating the Turbopack runtime breaks its module export getters and stops the page from hydrating.
+const isTurbopackRuntime = (name) => name.startsWith("turbopack-");
+
 async function findJavaScriptFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = await Promise.all(
     entries.map(async (entry) => {
       const path = join(directory, entry.name);
       if (entry.isDirectory()) return findJavaScriptFiles(path);
-      return entry.isFile() && entry.name.endsWith(".js") ? [path] : [];
+      return entry.isFile() && entry.name.endsWith(".js") && !isTurbopackRuntime(entry.name) ? [path] : [];
     }),
   );
 
