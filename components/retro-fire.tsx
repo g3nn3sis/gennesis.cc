@@ -51,7 +51,7 @@ export default function RetroFire() {
 
         for (let x = 0; x < columns; x++) {
           const sourceX = Math.max(0, Math.min(columns - 1, x + Math.floor(Math.random() * 3) - 1));
-          const cooling = Math.floor(Math.random() * 4);
+          const cooling = Math.floor(Math.random() * 3);
           next[row + x] = Math.max(0, current[below + sourceX] - cooling);
         }
       }
