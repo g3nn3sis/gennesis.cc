@@ -6,7 +6,7 @@ import { REPO_URL, SITE_NAME, TITLE_IMAGE, TRACKS } from "@/lib/site";
 import { useBackgroundAudio } from "@/lib/use-background-audio";
 import AudioControl from "./audio-control";
 import LeaveModal from "./leave-modal";
-import ParticleBackground from "./particle-background";
+import RetroFire from "./retro-fire";
 import SocialLinks from "./social-links";
 
 export default function Site({ build }: { build: BuildInfo }) {
@@ -35,7 +35,7 @@ export default function Site({ build }: { build: BuildInfo }) {
 
   return (
     <>
-      <ParticleBackground />
+      <RetroFire />
       <div className="scanlines" />
       <div className="vignette" />
 
