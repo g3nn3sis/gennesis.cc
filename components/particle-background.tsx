@@ -3,264 +3,346 @@
 import { useEffect, useRef } from "react";
 import styles from "./particle-background.module.css";
 
-type Point = { x: number; y: number };
-
-type Particle = {
+type Dot = {
   x: number;
   y: number;
-  vx: number;
-  vy: number;
-  radius: number;
-  mass: number;
+  offsetX: number;
+  offsetY: number;
+  velocityX: number;
+  velocityY: number;
   depth: number;
+  phase: number;
   color: string;
-  history: Point[];
-  sparkle: boolean;
 };
 
-const COLORS = ["#f7fbff", "#9bf9f0", "#9db6ff", "#f7a8e5"];
-const FRAME_MS = 1000 / 60;
+type Spark = {
+  x: number;
+  y: number;
+  velocityX: number;
+  velocityY: number;
+  life: number;
+};
 
-function createParticle(width: number, height: number): Particle {
-  const depth = 0.4 + Math.random() * 0.6;
-  const angle = Math.random() * Math.PI * 2;
-  const speed = 1.1 + Math.random() * 1.8 * depth;
+type Ripple = {
+  x: number;
+  y: number;
+  radius: number;
+  opacity: number;
+};
 
-  return {
-    x: Math.random() * width,
-    y: Math.random() * height,
-    vx: Math.cos(angle) * speed,
-    vy: Math.sin(angle) * speed,
-    radius: 0.75 + depth * 1.8,
-    mass: 0.7 + depth * 1.3,
-    depth,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    history: [],
-    sparkle: Math.random() < 0.14,
-  };
+const COLORS = ["#ffffff", "#d3ebff", "#a8e9ff", "#c5c4ff"];
+const FRAME_DURATION = 1000 / 60;
+
+function noise(x: number, y: number, seed: number): number {
+  const value = Math.sin(x * 127.1 + y * 311.7 + seed * 74.7) * 43758.5453;
+  return value - Math.floor(value);
 }
 
 export default function ParticleBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const backgroundRef = useRef<HTMLCanvasElement>(null);
+  const cursorRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d", { alpha: true });
-    if (!canvas || !context) return;
+    const background = backgroundRef.current;
+    const cursorCanvas = cursorRef.current;
+    const backgroundContext = background?.getContext("2d");
+    const cursorContext = cursorCanvas?.getContext("2d");
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!background || !cursorCanvas || !backgroundContext || !cursorContext) return;
+
+    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const coarsePointer = window.matchMedia("(pointer: coarse)");
-    const pointer = { x: -1000, y: -1000, active: false };
+    const pointer = {
+      x: 0,
+      y: 0,
+      easedX: 0,
+      easedY: 0,
+      active: false,
+    };
 
     let width = 0;
     let height = 0;
-    let particles: Particle[] = [];
+    let mobile = false;
+    let dots: Dot[] = [];
+    let sparks: Spark[] = [];
+    let ripples: Ripple[] = [];
     let frameId = 0;
     let lastFrame = 0;
     let running = false;
-    let mobile = false;
+
+    const drawDots = (time: number, delta: number, staticOnly = false) => {
+      backgroundContext.clearRect(0, 0, width, height);
+      backgroundContext.globalCompositeOperation = "lighter";
+
+      const parallaxX = pointer.active && !staticOnly ? (pointer.easedX / width - 0.5) * 18 : 0;
+      const parallaxY = pointer.active && !staticOnly ? (pointer.easedY / height - 0.5) * 18 : 0;
+
+      for (const dot of dots) {
+        if (!staticOnly) {
+          const driftX = Math.sin(time * 0.00038 + dot.phase) * dot.depth * 1.7;
+          const driftY = Math.cos(time * 0.00032 + dot.phase) * dot.depth * 1.7;
+          const targetX = driftX - parallaxX * dot.depth;
+          const targetY = driftY - parallaxY * dot.depth;
+
+          let forceX = (targetX - dot.offsetX) * 0.085;
+          let forceY = (targetY - dot.offsetY) * 0.085;
+
+          if (pointer.active) {
+            const differenceX = dot.x + dot.offsetX - pointer.easedX;
+            const differenceY = dot.y + dot.offsetY - pointer.easedY;
+            const distance = Math.hypot(differenceX, differenceY);
+            const range = 155;
+
+            if (distance < range) {
+              const influence = (1 - distance / range) ** 2 * dot.depth;
+              const directionX = distance > 0.01 ? differenceX / distance : Math.cos(dot.phase);
+              const directionY = distance > 0.01 ? differenceY / distance : Math.sin(dot.phase);
+              forceX += directionX * influence * 1.85;
+              forceY += directionY * influence * 1.85;
+            }
+          }
+
+          const damping = Math.pow(0.84, delta);
+          dot.velocityX = (dot.velocityX + forceX * delta) * damping;
+          dot.velocityY = (dot.velocityY + forceY * delta) * damping;
+          dot.offsetX = Math.max(-52, Math.min(52, dot.offsetX + dot.velocityX * delta));
+          dot.offsetY = Math.max(-52, Math.min(52, dot.offsetY + dot.velocityY * delta));
+        }
+
+        const x = Math.round(dot.x + (staticOnly ? 0 : dot.offsetX));
+        const y = Math.round(dot.y + (staticOnly ? 0 : dot.offsetY));
+        const size = dot.depth > 0.78 ? 3 : dot.depth > 0.43 ? 2 : 1;
+        const shimmer = staticOnly ? 1 : 0.88 + Math.sin(time * 0.0011 + dot.phase) * 0.12;
+
+        backgroundContext.fillStyle = dot.color;
+
+        if (dot.depth > 0.7) {
+          backgroundContext.globalAlpha = 0.075 * dot.depth * shimmer;
+          backgroundContext.fillRect(x - size * 2, y - size * 2, size * 5, size * 5);
+        }
+
+        backgroundContext.globalAlpha = (0.26 + dot.depth * 0.66) * shimmer;
+        backgroundContext.fillRect(x - Math.floor(size / 2), y - Math.floor(size / 2), size, size);
+      }
+
+      backgroundContext.globalCompositeOperation = "source-over";
+      backgroundContext.globalAlpha = 1;
+    };
+
+    const drawCursor = (time: number, delta: number) => {
+      cursorContext.clearRect(0, 0, width, height);
+      cursorContext.globalCompositeOperation = "lighter";
+
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const spark = sparks[i];
+        spark.life -= delta * 0.025;
+
+        if (spark.life <= 0) {
+          sparks.splice(i, 1);
+          continue;
+        }
+
+        spark.x += spark.velocityX * delta;
+        spark.y += spark.velocityY * delta;
+        spark.velocityX *= Math.pow(0.985, delta);
+        spark.velocityY *= Math.pow(0.985, delta);
+        const size = spark.life > 0.7 ? 3 : 2;
+
+        cursorContext.fillStyle = spark.life > 0.5 ? "#ffffff" : "#9fe7ff";
+        cursorContext.globalAlpha = spark.life * 0.56;
+        cursorContext.fillRect(Math.round(spark.x), Math.round(spark.y), size, size);
+      }
+
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const ripple = ripples[i];
+        ripple.radius += delta * 3.3;
+        ripple.opacity -= delta * 0.024;
+
+        if (ripple.opacity <= 0) {
+          ripples.splice(i, 1);
+          continue;
+        }
+
+        cursorContext.strokeStyle = "#b1f5ff";
+        cursorContext.lineWidth = 1.3;
+        cursorContext.globalAlpha = ripple.opacity;
+        cursorContext.beginPath();
+        cursorContext.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+        cursorContext.stroke();
+      }
+
+      if (pointer.active) {
+        const x = pointer.easedX;
+        const y = pointer.easedY;
+        const radius = 12 + Math.sin(time * 0.004) * 1.5;
+        const halo = cursorContext.createRadialGradient(x, y, 0, x, y, 44);
+
+        halo.addColorStop(0, "rgba(151, 228, 255, 0.19)");
+        halo.addColorStop(1, "rgba(151, 228, 255, 0)");
+        cursorContext.globalAlpha = 1;
+        cursorContext.fillStyle = halo;
+        cursorContext.fillRect(x - 44, y - 44, 88, 88);
+
+        cursorContext.strokeStyle = "#b4f2ff";
+        cursorContext.lineWidth = 1;
+        cursorContext.globalAlpha = 0.6;
+        cursorContext.beginPath();
+        cursorContext.arc(x, y, radius, 0, Math.PI * 2);
+        cursorContext.stroke();
+
+        cursorContext.fillStyle = "#ffffff";
+        cursorContext.globalAlpha = 0.5;
+        cursorContext.fillRect(Math.round(pointer.x) - 1, Math.round(pointer.y) - 1, 3, 3);
+
+        cursorContext.strokeStyle = "#d2f5ff";
+        cursorContext.globalAlpha = 0.35;
+        cursorContext.beginPath();
+        cursorContext.moveTo(x - radius - 7, y);
+        cursorContext.lineTo(x - radius - 3, y);
+        cursorContext.moveTo(x + radius + 3, y);
+        cursorContext.lineTo(x + radius + 7, y);
+        cursorContext.moveTo(x, y - radius - 7);
+        cursorContext.lineTo(x, y - radius - 3);
+        cursorContext.moveTo(x, y + radius + 3);
+        cursorContext.lineTo(x, y + radius + 7);
+        cursorContext.stroke();
+      }
+
+      cursorContext.globalCompositeOperation = "source-over";
+      cursorContext.globalAlpha = 1;
+    };
 
     const resize = () => {
-      const oldWidth = width;
-      const oldHeight = height;
       width = Math.max(1, window.innerWidth);
       height = Math.max(1, window.innerHeight);
       mobile = width < 640 || coarsePointer.matches;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2);
 
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(width * ratio);
-      canvas.height = Math.round(height * ratio);
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      for (const canvas of [background, cursorCanvas]) {
+        canvas.width = Math.round(width * pixelRatio);
+        canvas.height = Math.round(height * pixelRatio);
+      }
 
-      if (oldWidth && oldHeight) {
-        for (const particle of particles) {
-          particle.x *= width / oldWidth;
-          particle.y *= height / oldHeight;
-          particle.history = [];
+      backgroundContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      cursorContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+      const spacing = mobile ? 46 : 39;
+      const columns = Math.ceil(width / spacing);
+      const rows = Math.ceil(height / spacing);
+      const cellWidth = width / columns;
+      const cellHeight = height / rows;
+
+      dots = [];
+      for (let row = 0; row < rows; row++) {
+        for (let column = 0; column < columns; column++) {
+          const depth = 0.2 + noise(column, row, 0) * 0.8;
+          const colorIndex = Math.floor(noise(column, row, 1) * COLORS.length);
+
+          dots.push({
+            x: (column + 0.5) * cellWidth,
+            y: (row + 0.5) * cellHeight,
+            offsetX: 0,
+            offsetY: 0,
+            velocityX: 0,
+            velocityY: 0,
+            depth,
+            phase: noise(column, row, 2) * Math.PI * 2,
+            color: COLORS[colorIndex],
+          });
         }
       }
 
-      const count = mobile
-        ? Math.min(42, Math.max(24, Math.floor((width * height) / 12000)))
-        : Math.min(125, Math.max(45, Math.floor((width * height) / 11500)));
-
-      if (particles.length > count) particles.length = count;
-      while (particles.length < count) particles.push(createParticle(width, height));
+      if (motionPreference.matches) drawDots(0, 0, true);
     };
 
-    const render = (time: number) => {
+    const animate = (time: number) => {
       if (!running) return;
-      frameId = window.requestAnimationFrame(render);
+      frameId = window.requestAnimationFrame(animate);
 
-      if (lastFrame && time - lastFrame < (mobile ? 30 : 15)) return;
-      const dt = lastFrame ? Math.min((time - lastFrame) / FRAME_MS, 2.25) : 1;
+      if (lastFrame && time - lastFrame < (mobile ? 32 : 15)) return;
+      const delta = lastFrame ? Math.min((time - lastFrame) / FRAME_DURATION, 2) : 1;
       lastFrame = time;
-      context.clearRect(0, 0, width, height);
 
-      const wells = [
-        {
-          x: width * (0.5 + 0.28 * Math.sin(time * 0.00017)),
-          y: height * (0.5 + 0.3 * Math.cos(time * 0.00021)),
-          spin: 0.062,
-        },
-        {
-          x: width * (0.5 + 0.35 * Math.cos(time * 0.00013)),
-          y: height * (0.5 + 0.32 * Math.sin(time * 0.00019)),
-          spin: -0.051,
-        },
-      ];
-
-      for (const particle of particles) {
-        let ax = Math.sin(particle.y * 0.012 + time * 0.0007) * 0.012;
-        let ay = Math.cos(particle.x * 0.011 - time * 0.0005) * 0.012;
-
-        for (const well of wells) {
-          const dx = well.x - particle.x;
-          const dy = well.y - particle.y;
-          const distance = Math.hypot(dx, dy) || 1;
-          const influence = Math.max(0, 1 - distance / (Math.max(width, height) * 0.66));
-          const strength = influence * particle.depth;
-          ax += ((dx / distance) * 0.027 - (dy / distance) * well.spin) * strength;
-          ay += ((dy / distance) * 0.027 + (dx / distance) * well.spin) * strength;
-        }
-
-        if (pointer.active) {
-          const dx = particle.x - pointer.x;
-          const dy = particle.y - pointer.y;
-          const distance = Math.hypot(dx, dy) || 1;
-          if (distance < 205) {
-            const influence = (1 - distance / 205) ** 2;
-            const force = distance < 95 ? 0.82 : -0.095;
-            ax += ((dx / distance) * force - (dy / distance) * 0.22) * influence;
-            ay += ((dy / distance) * force + (dx / distance) * 0.22) * influence;
-          }
-        }
-
-        const drag = Math.pow(0.997, dt);
-        particle.vx = (particle.vx + ax * dt) * drag;
-        particle.vy = (particle.vy + ay * dt) * drag;
-
-        const maxSpeed = 2.5 + particle.depth * 3.1;
-        const speed = Math.hypot(particle.vx, particle.vy);
-        if (speed > maxSpeed) {
-          particle.vx = (particle.vx / speed) * maxSpeed;
-          particle.vy = (particle.vy / speed) * maxSpeed;
-        }
-
-        particle.x += particle.vx * dt;
-        particle.y += particle.vy * dt;
-
-        if (particle.x < 0 || particle.x > width) {
-          particle.x = Math.max(0, Math.min(width, particle.x));
-          particle.vx *= -0.92;
-        }
-        if (particle.y < 0 || particle.y > height) {
-          particle.y = Math.max(0, Math.min(height, particle.y));
-          particle.vy *= -0.92;
-        }
+      if (pointer.active) {
+        const smoothing = 1 - Math.pow(0.68, delta);
+        pointer.easedX += (pointer.x - pointer.easedX) * smoothing;
+        pointer.easedY += (pointer.y - pointer.easedY) * smoothing;
       }
 
-      context.globalCompositeOperation = "lighter";
-
-      for (let i = 0; i < particles.length; i++) {
-        const a = particles[i];
-
-        for (let j = i + 1; j < particles.length; j++) {
-          const b = particles[j];
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
-          const distanceSquared = dx * dx + dy * dy;
-          const separation = a.radius + b.radius + 8;
-
-          if (distanceSquared < separation * separation && distanceSquared > 0.0001) {
-            const distance = Math.sqrt(distanceSquared);
-            const nx = dx / distance;
-            const ny = dy / distance;
-            const overlap = separation - distance;
-            const totalMass = a.mass + b.mass;
-            a.x -= nx * overlap * (b.mass / totalMass);
-            a.y -= ny * overlap * (b.mass / totalMass);
-            b.x += nx * overlap * (a.mass / totalMass);
-            b.y += ny * overlap * (a.mass / totalMass);
-
-            const relativeSpeed = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
-            if (relativeSpeed < 0) {
-              const impulse = (-(1 + 0.86) * relativeSpeed) / (1 / a.mass + 1 / b.mass);
-              a.vx -= (impulse * nx) / a.mass;
-              a.vy -= (impulse * ny) / a.mass;
-              b.vx += (impulse * nx) / b.mass;
-              b.vy += (impulse * ny) / b.mass;
-            }
-          } else if (!mobile && distanceSquared < 72 * 72) {
-            const distance = Math.sqrt(distanceSquared);
-            context.globalAlpha = (1 - distance / 72) * 0.16;
-            context.strokeStyle = "#9bf9f0";
-            context.lineWidth = 0.65;
-            context.beginPath();
-            context.moveTo(a.x, a.y);
-            context.lineTo(b.x, b.y);
-            context.stroke();
-          }
-        }
-      }
-
-      for (const particle of particles) {
-        particle.history.unshift({ x: particle.x, y: particle.y });
-        const trailLength = Math.round(5 + particle.depth * (mobile ? 5 : 9));
-        if (particle.history.length > trailLength) particle.history.length = trailLength;
-
-        context.strokeStyle = particle.color;
-        context.lineCap = "square";
-
-        for (let i = particle.history.length - 1; i > 0; i--) {
-          const fade = 1 - i / particle.history.length;
-          context.globalAlpha = fade * 0.42 * particle.depth;
-          context.lineWidth = Math.max(0.6, particle.radius * fade);
-          context.beginPath();
-          context.moveTo(particle.history[i].x, particle.history[i].y);
-          context.lineTo(particle.history[i - 1].x, particle.history[i - 1].y);
-          context.stroke();
-        }
-
-        const x = Math.round(particle.x);
-        const y = Math.round(particle.y);
-        const size = Math.max(1, Math.round(particle.radius * 1.4));
-
-        context.fillStyle = particle.color;
-        context.globalAlpha = 0.13;
-        context.fillRect(x - size * 2, y - size * 2, size * 5, size * 5);
-        context.globalAlpha = 0.88;
-        context.fillRect(x, y, size, size);
-
-        if (particle.sparkle && Math.sin(time * 0.003 + particle.mass * 12) > 0.8) {
-          context.globalAlpha = 0.38;
-          context.fillRect(x - size * 3, y, size * 2, 1);
-          context.fillRect(x + size * 2, y, size * 2, 1);
-          context.fillRect(x, y - size * 3, 1, size * 2);
-          context.fillRect(x, y + size * 2, 1, size * 2);
-        }
-      }
-
-      context.globalAlpha = 1;
-      context.globalCompositeOperation = "source-over";
+      drawDots(time, delta);
+      drawCursor(time, delta);
     };
 
     const stop = () => {
       running = false;
       window.cancelAnimationFrame(frameId);
       lastFrame = 0;
-      context.clearRect(0, 0, width, height);
+      backgroundContext.clearRect(0, 0, width, height);
+      cursorContext.clearRect(0, 0, width, height);
+      sparks = [];
+      ripples = [];
     };
 
     const start = () => {
-      if (running || reducedMotion.matches || document.hidden) return;
+      if (running || document.hidden) return;
+      if (motionPreference.matches) {
+        drawDots(0, 0, true);
+        return;
+      }
       running = true;
-      frameId = window.requestAnimationFrame(render);
+      frameId = window.requestAnimationFrame(animate);
+    };
+
+    const updatePointer = (event: PointerEvent) => {
+      if (motionPreference.matches || event.pointerType === "touch") return;
+
+      const wasActive = pointer.active;
+      const oldX = pointer.x;
+      const oldY = pointer.y;
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+      pointer.active = true;
+
+      if (!wasActive) {
+        pointer.easedX = pointer.x;
+        pointer.easedY = pointer.y;
+        return;
+      }
+
+      const distance = Math.hypot(pointer.x - oldX, pointer.y - oldY);
+      const count = Math.min(4, Math.floor(distance / 9));
+      for (let i = 0; i < count; i++) {
+        const fraction = (i + 1) / (count + 1);
+        sparks.push({
+          x: oldX + (pointer.x - oldX) * fraction,
+          y: oldY + (pointer.y - oldY) * fraction,
+          velocityX: (Math.random() - 0.5) * 1.4,
+          velocityY: (Math.random() - 0.5) * 1.4,
+          life: 0.65 + Math.random() * 0.35,
+        });
+      }
+
+      if (sparks.length > 85) sparks.splice(0, sparks.length - 85);
+    };
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (motionPreference.matches || event.pointerType === "touch") return;
+      updatePointer(event);
+      ripples.push({ x: event.clientX, y: event.clientY, radius: 5, opacity: 0.75 });
+      if (ripples.length > 6) ripples.shift();
+    };
+
+    const handlePointerOut = (event: PointerEvent) => {
+      if (!event.relatedTarget) pointer.active = false;
+    };
+
+    const releasePointer = () => {
+      pointer.active = false;
     };
 
     const updateMotion = () => {
-      if (reducedMotion.matches) stop();
-      else start();
+      stop();
+      start();
     };
 
     const updateVisibility = () => {
@@ -268,40 +350,33 @@ export default function ParticleBackground() {
       else start();
     };
 
-    const updatePointer = (event: PointerEvent) => {
-      pointer.x = event.clientX;
-      pointer.y = event.clientY;
-      pointer.active = true;
-    };
-
-    const releasePointer = () => {
-      pointer.active = false;
-    };
-
     resize();
     start();
 
     window.addEventListener("resize", resize);
     window.addEventListener("pointermove", updatePointer, { passive: true });
-    window.addEventListener("pointerdown", updatePointer, { passive: true });
-    window.addEventListener("pointerup", releasePointer);
-    window.addEventListener("pointercancel", releasePointer);
+    window.addEventListener("pointerdown", handlePointerDown, { passive: true });
+    window.addEventListener("pointerout", handlePointerOut);
     window.addEventListener("blur", releasePointer);
     document.addEventListener("visibilitychange", updateVisibility);
-    reducedMotion.addEventListener("change", updateMotion);
+    motionPreference.addEventListener("change", updateMotion);
 
     return () => {
       stop();
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", updatePointer);
-      window.removeEventListener("pointerdown", updatePointer);
-      window.removeEventListener("pointerup", releasePointer);
-      window.removeEventListener("pointercancel", releasePointer);
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointerout", handlePointerOut);
       window.removeEventListener("blur", releasePointer);
       document.removeEventListener("visibilitychange", updateVisibility);
-      reducedMotion.removeEventListener("change", updateMotion);
+      motionPreference.removeEventListener("change", updateMotion);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />;
+  return (
+    <>
+      <canvas ref={backgroundRef} className={styles.canvas} aria-hidden="true" />
+      <canvas ref={cursorRef} className={styles.cursorCanvas} aria-hidden="true" />
+    </>
+  );
 }
