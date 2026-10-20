@@ -90,10 +90,9 @@ body {
 
 .fire {
     position: fixed;
-    left: 0;
-    bottom: 0;
+    inset: 0;
     width: 100%;
-    height: clamp(200px, 35vh, 340px);
+    height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -103,7 +102,6 @@ body {
     line-height: 1;
     font-family: "Courier New", Courier, monospace;
     color: transparent;
-    opacity: 0.92;
     z-index: 1;
 }
 
@@ -182,9 +180,6 @@ body {
     .copyright {
         font-size: 0.7rem;
     }
-    .fire {
-        height: clamp(145px, 31vh, 210px);
-    }
 }
 
 @media (max-width: 320px) {
@@ -202,9 +197,6 @@ body {
     }
     .entry-text {
         font-size: 0.875rem;
-    }
-    .fire {
-        height: min(35vh, 135px);
     }
 }
 
