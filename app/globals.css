@@ -93,10 +93,31 @@ body {
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 160px;
+    height: clamp(200px, 35vh, 340px);
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
     pointer-events: none;
-    image-rendering: pixelated;
-    opacity: 0.9;
+    user-select: none;
+    white-space: pre;
+    line-height: 1;
+    font-family: "Courier New", Courier, monospace;
+    color: transparent;
+    opacity: 0.92;
+    z-index: 1;
+}
+
+.fire .c1 { color: #4a0d00; }
+.fire .c2 { color: #a22800; }
+.fire .c3 { color: #e05000; }
+.fire .c4 { color: #ff8f1f; }
+.fire .c5 { color: #ffd23e; }
+
+.fire-burn {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 100%, rgba(255, 90, 0, 0.18), transparent 62%);
     z-index: 1;
 }
 
@@ -162,7 +183,7 @@ body {
         font-size: 0.7rem;
     }
     .fire {
-        height: 120px;
+        height: clamp(145px, 31vh, 210px);
     }
 }
 
@@ -183,7 +204,7 @@ body {
         font-size: 0.875rem;
     }
     .fire {
-        height: 80px;
+        height: min(35vh, 135px);
     }
 }
 
