@@ -13,6 +13,7 @@ type Ember = {
 };
 
 const TICK_INTERVAL = 30;
+const MOBILE_QUERY = "(hover: none) and (pointer: coarse)";
 
 const FIRE: ReadonlyArray<readonly [number, string, string]> = [
   [0, " ", ""],
@@ -55,6 +56,7 @@ export default function RetroFire() {
     if (!stage) return;
 
     const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mobileDevice = window.matchMedia(MOBILE_QUERY);
 
     let columns = 1;
     let rows = 1;
@@ -160,6 +162,8 @@ export default function RetroFire() {
     };
 
     const layout = () => {
+      if (mobileDevice.matches) return;
+
       const fontSize = Math.max(12, Math.min(32, Math.round(window.innerWidth / 150)));
       stage.style.fontSize = String(fontSize) + "px";
 
@@ -194,12 +198,18 @@ export default function RetroFire() {
     };
 
     const start = () => {
-      if (intervalId !== undefined || document.hidden || motionPreference.matches) return;
+      if (intervalId !== undefined || document.hidden || motionPreference.matches || mobileDevice.matches) return;
       intervalId = window.setInterval(tick, TICK_INTERVAL);
     };
 
     const updateMotion = () => {
       stop();
+      start();
+    };
+
+    const updateDevice = () => {
+      stop();
+      layout();
       start();
     };
 
@@ -214,12 +224,14 @@ export default function RetroFire() {
     window.addEventListener("resize", layout);
     document.addEventListener("visibilitychange", updateVisibility);
     motionPreference.addEventListener("change", updateMotion);
+    mobileDevice.addEventListener("change", updateDevice);
 
     return () => {
       stop();
       window.removeEventListener("resize", layout);
       document.removeEventListener("visibilitychange", updateVisibility);
       motionPreference.removeEventListener("change", updateMotion);
+      mobileDevice.removeEventListener("change", updateDevice);
     };
   }, []);
 
