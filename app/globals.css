@@ -102,6 +102,7 @@ body {
     line-height: 1;
     font-family: "Courier New", Courier, monospace;
     color: transparent;
+    forced-color-adjust: none;
     z-index: 1;
 }
 
@@ -116,7 +117,15 @@ body {
     inset: 0;
     pointer-events: none;
     background: radial-gradient(ellipse at 50% 100%, rgba(255, 90, 0, 0.18), transparent 62%);
+    forced-color-adjust: none;
     z-index: 1;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .fire,
+    .fire-burn {
+        display: none;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -336,6 +345,8 @@ a:hover, button:hover, img:hover, .content p:hover {
     max-width: 800px;
     width: 100%;
     box-sizing: border-box;
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
 }
 
 .main-content.visible {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import RetroFire from "@/components/retro-fire";
 import { SITE_NAME, TITLE_IMAGE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <>
+      <RetroFire />
       <div className="scanlines" />
       <div className="vignette" />
 
