@@ -17,11 +17,15 @@ body {
     color: #ffffff;
     font-family: 'Minecraft', monospace;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: safe center;
+    justify-content: safe center;
     overflow-x: hidden;
+    padding: 1.25rem;
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
 }
 
 .title-container {
@@ -640,11 +644,27 @@ a:hover, button:hover, img:hover, .content p:hover {
         right: 0.5rem;
     }
     .audio-toggle {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 2.75rem;
+        height: 2.75rem;
     }
     .audio-slider-inner {
-        height: 2.5rem;
+        height: 2.75rem;
+    }
+}
+
+/* Touch devices have no hover: keep the volume slider reachable and tap targets at 44px. */
+@media (hover: none) and (pointer: coarse) {
+    .audio-slider-wrap {
+        max-width: 7rem;
+        opacity: 1;
+        visibility: visible;
+    }
+    .audio-toggle {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+    .audio-slider-inner {
+        height: 2.75rem;
     }
 }
 
