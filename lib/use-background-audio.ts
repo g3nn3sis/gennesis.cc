@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import type { Track } from "@/lib/site";
 
 const SETTINGS_KEY = "gennesis-audio-settings";
 const SETTINGS_CHANGE_EVENT = "gennesis-audio-settings-change";
@@ -74,13 +75,28 @@ function saveSettings(settings: AudioSettings) {
   window.dispatchEvent(new Event(SETTINGS_CHANGE_EVENT));
 }
 
-export function useBackgroundAudio(tracks: readonly string[]) {
+function shuffledIndices(length: number): number[] {
+  const order = Array.from({ length }, (_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+}
+
+export function useBackgroundAudio(tracks: readonly Track[]) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const startedRef = useRef(false);
+  const [order] = useState(() => shuffledIndices(tracks.length));
+  const [position, setPosition] = useState(0);
   const { muted, volume } = useSyncExternalStore(
     subscribeToSettings,
     getSettings,
     () => DEFAULT_SETTINGS,
   );
+
+  const trackCount = tracks.length;
+  const currentTrack = tracks[order[position] ?? 0];
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -90,14 +106,32 @@ export function useBackgroundAudio(tracks: readonly string[]) {
     }
   }, [muted, volume]);
 
-  const play = useCallback(() => {
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrack) return;
+    audio.src = currentTrack.src;
+    if (startedRef.current) {
+      audio.play().catch((err) => console.warn("Playback failed:", err));
+    }
+  }, [currentTrack]);
+
+  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (!audio.src) audio.src = tracks[Math.floor(Math.random() * tracks.length)];
+    const advance = () => setPosition((current) => (current + 1) % trackCount);
+    audio.addEventListener("ended", advance);
+    return () => audio.removeEventListener("ended", advance);
+  }, [trackCount]);
+
+  const play = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrack) return;
+    startedRef.current = true;
+    if (!audio.src) audio.src = currentTrack.src;
     audio.muted = muted;
     audio.volume = volume;
     audio.play().catch((err) => console.warn("Playback failed:", err));
-  }, [muted, tracks, volume]);
+  }, [currentTrack, muted, volume]);
 
   const toggleMuted = useCallback(() => {
     saveSettings({
@@ -111,5 +145,15 @@ export function useBackgroundAudio(tracks: readonly string[]) {
     saveSettings({ muted: nextVolume === 0, volume: nextVolume });
   }, []);
 
-  return { audioRef, muted, play, toggleMuted, setVolume, volume };
+  return {
+    audioRef,
+    muted,
+    play,
+    toggleMuted,
+    setVolume,
+    volume,
+    currentTrack,
+    trackNumber: position + 1,
+    trackCount,
+  };
 }

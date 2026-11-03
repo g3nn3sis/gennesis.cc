@@ -98,6 +98,9 @@ body {
     overflow: hidden;
     pointer-events: none;
     user-select: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     white-space: pre;
     line-height: 1;
     font-family: "Courier New", Courier, monospace;
@@ -140,7 +143,10 @@ body {
     .modal,
     .modal-overlay,
     .main-content,
-    .entry-screen {
+    .entry-screen,
+    .now-playing,
+    .now-playing-note,
+    .gh-list a {
         animation: none !important;
         transition: none !important;
     }
@@ -488,7 +494,54 @@ a:hover, button:hover, img:hover, .content p:hover {
     right: 0.75rem;
     z-index: 1500;
     display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+}
+
+.audio-control-row {
+    display: flex;
     align-items: center;
+}
+
+.now-playing {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    max-width: 10rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.08rem;
+    text-transform: lowercase;
+    opacity: 0.55;
+    animation: now-playing-in 0.4s ease-out both;
+}
+
+.now-playing.muted {
+    opacity: 0.3;
+}
+
+.now-playing-note {
+    animation: now-playing-pulse 1.6s ease-in-out infinite;
+}
+
+.now-playing.muted .now-playing-note {
+    animation: none;
+}
+
+.now-playing-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@keyframes now-playing-in {
+    0% { opacity: 0; transform: translateY(-0.2rem); }
+    100% { opacity: 0.55; transform: translateY(0); }
+}
+
+@keyframes now-playing-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
 }
 
 .audio-toggle {
@@ -614,4 +667,105 @@ a:hover, button:hover, img:hover, .content p:hover {
 .corner a {
     color: #ffffff;
     text-decoration: none;
+}
+
+.gh-feed {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: left;
+}
+
+.gh-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.1rem;
+    text-transform: lowercase;
+    opacity: 0.6;
+    margin-bottom: 0.9rem;
+}
+
+.gh-note {
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.5;
+}
+
+.gh-note a {
+    color: #ffffff;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.gh-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    max-width: 30rem;
+    margin: 0 auto;
+}
+
+.gh-list a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.gh-list a:hover,
+.gh-list a:focus-visible {
+    border-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.05);
+    outline: none;
+}
+
+.gh-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.gh-verb {
+    opacity: 0.6;
+}
+
+.gh-repo {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gh-time {
+    margin-left: auto;
+    font-size: 0.65rem;
+    opacity: 0.4;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.gh-detail {
+    font-size: 0.7rem;
+    opacity: 0.55;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .gh-list a {
+        padding: 0.6rem 0.75rem;
+    }
+    .gh-line {
+        font-size: 0.75rem;
+    }
 }

@@ -5,6 +5,7 @@ import type { BuildInfo } from "@/lib/build-info";
 import { REPO_URL, SITE_NAME, TITLE_IMAGE, TRACKS } from "@/lib/site";
 import { useBackgroundAudio } from "@/lib/use-background-audio";
 import AudioControl from "./audio-control";
+import GitHubActivity from "./github-activity";
 import LeaveModal from "./leave-modal";
 import RetroFire from "./retro-fire";
 import SocialLinks from "./social-links";
@@ -12,7 +13,8 @@ import SocialLinks from "./social-links";
 export default function Site({ build }: { build: BuildInfo }) {
   const [entered, setEntered] = useState(false);
   const [pendingUrl, setPendingUrl] = useState<string | null>(null);
-  const { audioRef, muted, play, toggleMuted, setVolume, volume } = useBackgroundAudio(TRACKS);
+  const { audioRef, muted, play, toggleMuted, setVolume, volume, currentTrack, trackNumber, trackCount } =
+    useBackgroundAudio(TRACKS);
 
   const enter = () => {
     setEntered(true);
@@ -20,6 +22,8 @@ export default function Site({ build }: { build: BuildInfo }) {
   };
 
   const confirmLeave = (e: MouseEvent<HTMLAnchorElement>) => {
+    // mailto: opens the mail client in place — no "are you sure you're leaving" prompt.
+    if (e.currentTarget.protocol === "mailto:") return;
     e.preventDefault();
     setPendingUrl(e.currentTarget.href);
   };
@@ -32,6 +36,7 @@ export default function Site({ build }: { build: BuildInfo }) {
   }, [pendingUrl]);
 
   const modalOpen = pendingUrl !== null;
+  const trackLabel = currentTrack?.title ?? `track ${trackNumber} / ${trackCount}`;
 
   return (
     <>
@@ -40,7 +45,14 @@ export default function Site({ build }: { build: BuildInfo }) {
       <div className="vignette" />
 
       <audio ref={audioRef} preload="none" loop />
-      <AudioControl muted={muted} volume={volume} onToggle={toggleMuted} onVolumeChange={setVolume} />
+      <AudioControl
+        muted={muted}
+        volume={volume}
+        label={trackLabel}
+        showLabel={entered}
+        onToggle={toggleMuted}
+        onVolumeChange={setVolume}
+      />
 
       <button
         type="button"
@@ -66,6 +78,7 @@ export default function Site({ build }: { build: BuildInfo }) {
             Find me here:
           </p>
           <SocialLinks onNavigate={confirmLeave} />
+          <GitHubActivity onNavigate={confirmLeave} />
           <div className="copyright corner corner-right">&copy; {SITE_NAME} 2026</div>
           <div className="corner corner-left">
             <a href={`${REPO_URL}/commit/${build.sha}`} target="_blank" rel="noopener" onClick={confirmLeave}>
