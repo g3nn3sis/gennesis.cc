@@ -6,11 +6,20 @@ import { VolumeOffIcon, VolumeOnIcon } from "./icons";
 interface AudioControlProps {
   muted: boolean;
   volume: number;
+  label?: string;
+  showLabel: boolean;
   onToggle: () => void;
   onVolumeChange: (volume: number) => void;
 }
 
-export default function AudioControl({ muted, volume, onToggle, onVolumeChange }: AudioControlProps) {
+export default function AudioControl({
+  muted,
+  volume,
+  label,
+  showLabel,
+  onToggle,
+  onVolumeChange,
+}: AudioControlProps) {
   const sliderRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -25,31 +34,41 @@ export default function AudioControl({ muted, volume, onToggle, onVolumeChange }
 
   return (
     <div className="audio-control">
-      <div className="audio-slider-wrap">
-        <div className="audio-slider-inner">
-          <input
-            ref={sliderRef}
-            type="range"
-            className="audio-slider"
-            min={0}
-            max={100}
-            value={Math.round(volume * 100)}
-            aria-label="Volume"
-            onInput={(e) => onVolumeChange(Number(e.currentTarget.value) / 100)}
-            onMouseUp={release}
-            onTouchEnd={release}
-          />
+      <div className="audio-control-row">
+        <div className="audio-slider-wrap">
+          <div className="audio-slider-inner">
+            <input
+              ref={sliderRef}
+              type="range"
+              className="audio-slider"
+              min={0}
+              max={100}
+              value={Math.round(volume * 100)}
+              aria-label="Volume"
+              onInput={(e) => onVolumeChange(Number(e.currentTarget.value) / 100)}
+              onMouseUp={release}
+              onTouchEnd={release}
+            />
+          </div>
         </div>
+        <button
+          type="button"
+          className="audio-toggle"
+          aria-label={muted ? "Unmute audio" : "Mute audio"}
+          title={muted ? "Unmute" : "Mute"}
+          onClick={onToggle}
+        >
+          {muted ? <VolumeOffIcon /> : <VolumeOnIcon />}
+        </button>
       </div>
-      <button
-        type="button"
-        className="audio-toggle"
-        aria-label={muted ? "Unmute audio" : "Mute audio"}
-        title={muted ? "Unmute" : "Mute"}
-        onClick={onToggle}
-      >
-        {muted ? <VolumeOffIcon /> : <VolumeOnIcon />}
-      </button>
+      {showLabel && label ? (
+        <div className={`now-playing${muted ? " muted" : ""}`} aria-live="polite">
+          <span className="now-playing-note" aria-hidden="true">
+            &#9834;
+          </span>
+          <span className="now-playing-text">{label}</span>
+        </div>
+      ) : null}
     </div>
   );
 }
