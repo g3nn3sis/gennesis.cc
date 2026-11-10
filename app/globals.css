@@ -789,3 +789,98 @@ a:hover, button:hover, img:hover, .content p:hover {
         font-size: 0.75rem;
     }
 }
+
+.promo {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: left;
+}
+
+.promo-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.1rem;
+    text-transform: lowercase;
+    opacity: 0.6;
+    margin-bottom: 0.9rem;
+}
+
+.promo-card {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    max-width: 30rem;
+    margin: 0 auto;
+    padding: 0.6rem;
+    color: #ffffff;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.promo-card:hover,
+.promo-card:focus-visible {
+    border-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.05);
+    outline: none;
+}
+
+.promo-thumb {
+    flex-shrink: 0;
+    width: 7.5rem;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: #000000;
+}
+
+.promo-thumb:hover {
+    transform: none;
+}
+
+.promo-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+.promo-title {
+    font-size: 0.95rem;
+    font-weight: bold;
+    letter-spacing: 0.05rem;
+}
+
+.promo-tagline {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    opacity: 0.6;
+}
+
+.promo-cta {
+    margin-top: 0.1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.05rem;
+    text-transform: lowercase;
+    opacity: 0.75;
+}
+
+.promo-card:hover .promo-cta,
+.promo-card:focus-visible .promo-cta {
+    opacity: 1;
+}
+
+@media (max-width: 480px) {
+    .promo-card {
+        flex-direction: column;
+    }
+    .promo-thumb {
+        width: 100%;
+    }
+}

@@ -5,6 +5,9 @@ export const REPO_URL = "https://github.com/g3nn3sis/gennesis.cc";
 export const GITHUB_USER = "g3nn3sis";
 export const TITLE_IMAGE = `${ASSET_ORIGIN}/9f51a7472a58e26f.gif`;
 
+export const CASTER_URL = "https://caster.gennesis.cc";
+export const CASTER_IMAGE = `${ASSET_ORIGIN}/955a5ff30ec49553.png`;
+
 export interface Track {
   src: string;
   title?: string;

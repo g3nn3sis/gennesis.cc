@@ -7,6 +7,7 @@ import { useBackgroundAudio } from "@/lib/use-background-audio";
 import AudioControl from "./audio-control";
 import GitHubActivity from "./github-activity";
 import LeaveModal from "./leave-modal";
+import Promo from "./promo";
 import RetroFire from "./retro-fire";
 import SocialLinks from "./social-links";
 
@@ -78,6 +79,7 @@ export default function Site({ build }: { build: BuildInfo }) {
             Find me here:
           </p>
           <SocialLinks onNavigate={confirmLeave} />
+          <Promo onNavigate={confirmLeave} />
           <GitHubActivity onNavigate={confirmLeave} />
           <div className="copyright corner corner-right">&copy; {SITE_NAME} 2026</div>
           <div className="corner corner-left">
